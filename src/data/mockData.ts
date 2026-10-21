@@ -1,45 +1,150 @@
-import { Category, ServiceItem, FeaturedItem, Testimonial, Merchant, Order, VerificationRequest, ComplaintTicket, BlogReel } from '@/types';
+import { Category, ServiceItem, FeaturedItem, Testimonial, Merchant, Order, VerificationRequest, ComplaintTicket, BlogReel, MerchantListing } from '@/types';
 
 export const CATEGORIES: Category[] = [
   {
-    id: 'food-dining',
-    name: 'Food & Dining',
-    slug: 'food-dining',
+    id: 'home-decor',
+    name: 'Home Decor',
+    slug: 'home-decor',
+    iconName: 'Armchair',
+    bgColor: '#EFF6FF',
+    color: '#2563EB',
+    count: '2,840+ Stores',
+    description: 'Room furniture, designer furnishings, lamps, modular kitchens & luxury interior architects.',
+    subcategories: [
+      { id: 'hd-1', name: 'Room Furniture', slug: 'room-furniture', itemCount: '840+ Showrooms', description: 'Solid teakwood sofas, recliners, king size beds, ergonomic wardrobes, and modular study desks.' },
+      { id: 'hd-2', name: 'Furnishing', slug: 'furnishing', itemCount: '620+ Outlets', description: 'Blackout curtains, Egyptian cotton bedsheets, artisanal cushions, rugs, and custom blinds.' },
+      { id: 'hd-3', name: 'Lamps & Lights', slug: 'lamps-lights', itemCount: '430+ Studios', description: 'Crystal chandeliers, architectural ambient LEDs, pendant ceiling lights, and outdoor garden lamps.' },
+      { id: 'hd-4', name: 'Kitchen & Dining', slug: 'kitchen-dining', itemCount: '510+ Stores', description: 'German acrylic modular kitchens, quartz dining tables, brass crockery, and chimney appliances.' },
+      { id: 'hd-5', name: 'Interior Designers', slug: 'interior-designers', itemCount: '390+ Firms', description: '3D turnkey home renovation, modular kitchen architects, false ceiling experts, and vastu planning.' }
+    ]
+  },
+  {
+    id: 'real-estate',
+    name: 'Real Estate',
+    slug: 'real-estate',
+    iconName: 'Building',
+    bgColor: '#ECFDF5',
+    color: '#059669',
+    count: '3,120+ Agents',
+    description: 'Trusted estate agents for commercial plots, residential flats, farm lands, and rental leases.',
+    subcategories: [
+      { id: 're-1', name: 'Estate Agents For Land', slug: 'estate-agents-for-land', itemCount: '1,240+ Agents', description: 'Verified clear-title NA farm plots, industrial land parcels, highway acreage, and DTCP approved layouts.' },
+      { id: 're-2', name: 'Commercial Spaces & Offices', slug: 'commercial-spaces', itemCount: '890+ Agencies', description: 'Co-working spaces, retail retail shop leases, corporate IT towers, and warehouse godowns.' },
+      { id: 're-3', name: 'Residential Flats & Villas', slug: 'residential-flats', itemCount: '990+ Brokers', description: 'Gated community luxury apartments, independent duplex villas, and premium resale penthouses.' }
+    ]
+  },
+  {
+    id: 'restaurants',
+    name: 'Restaurants',
+    slug: 'restaurants',
     iconName: 'Utensils',
     bgColor: '#FFF3EB',
     color: '#EA580C',
-    count: '3,420+ Outlets',
-    description: 'Fine dining, cloud kitchens, regional thalis, and bakeries.'
+    count: '5,420+ Outlets',
+    description: 'Pure vegetarian thalis, authentic Dum Biryanis, sweet houses, rooftop dining, and bakeries.',
+    subcategories: [
+      { id: 'rst-1', name: 'Pure Veg & Regional Thalis', slug: 'pure-veg-thali', itemCount: '1,420+ Outlets', description: 'Unlimited Gujarati, Marwari, South Indian banana leaf meals, and sattvic dining.' },
+      { id: 'rst-2', name: 'Dum Biryani & Kebabs', slug: 'dum-biryani', itemCount: '1,890+ Outlets', description: 'Royal Hyderabadi Dum Biryani, Lucknowi handi meat, and clay oven tandoori platters.' },
+      { id: 'rst-3', name: 'Sweets & Confectioneries', slug: 'sweets-confectioneries', itemCount: '920+ Sweet Marts', description: 'Pure ghee motichoor ladoos, kaju katli, Bengali rasgullas, and dry fruit hampers.' }
+    ]
   },
   {
-    id: 'shopping',
-    name: 'Shopping',
-    slug: 'shopping',
-    iconName: 'ShoppingBag',
-    bgColor: '#F3E8FF',
-    color: '#9333EA',
-    count: '4,100+ Stores',
-    description: 'Apparel, footwear, electronics, groceries, and artisanal goods.'
+    id: 'hotels',
+    name: 'Hotels',
+    slug: 'hotels',
+    iconName: 'Hotel',
+    bgColor: '#FEF3C7',
+    color: '#D97706',
+    count: '1,120+ Properties',
+    description: 'Budget business stays, 5-star heritage resorts, transit airport rooms, and serviced suites.',
+    subcategories: [
+      { id: 'htl-1', name: 'Luxury 4 & 5 Star Resorts', slug: 'luxury-resorts', itemCount: '240+ Hotels', description: 'Spa resorts, swimming pools, multi-cuisine banquets, and presidential suites.' },
+      { id: 'htl-2', name: 'Business Transit Hotels', slug: 'business-hotels', itemCount: '580+ Hotels', description: 'Near IT hubs and airports with express check-in, high-speed WiFi, and conference rooms.' }
+    ]
   },
   {
-    id: 'home-services',
-    name: 'Home Services',
-    slug: 'home-services',
-    iconName: 'Home',
-    bgColor: '#E0F2FE',
-    color: '#0284C7',
-    count: '1,890+ Pros',
-    description: 'Deep cleaning, plumbing, electricians, painting, and appliance repair.'
-  },
-  {
-    id: 'beauty-wellness',
-    name: 'Beauty & Wellness',
-    slug: 'beauty-wellness',
+    id: 'beauty-spa',
+    name: 'Beauty Spa',
+    slug: 'beauty-spa',
     iconName: 'Flower2',
     bgColor: '#FCE7F3',
     color: '#DB2777',
-    count: '1,250+ Salons',
-    description: 'Hair styling, Ayurvedic spas, skin therapy, and bridal studios.'
+    count: '2,150+ Salons',
+    description: 'Unisex hair salons, Ayurvedic spas, bridal makeup studios, and clinical skincare.',
+    subcategories: [
+      { id: 'bsp-1', name: 'Hair & Styling Salons', slug: 'hair-salons', itemCount: '980+ Salons', description: 'Keratin treatments, botox hair therapy, global coloring, and beard grooming.' },
+      { id: 'bsp-2', name: 'Ayurvedic & Wellness Spas', slug: 'ayurvedic-spas', itemCount: '640+ Spas', description: 'Panchakarma, hot stone body therapy, aromatherapy, and herbal steam baths.' }
+    ]
+  },
+  {
+    id: 'contractors',
+    name: 'Contractors',
+    slug: 'contractors',
+    iconName: 'HardHat',
+    bgColor: '#FFF7ED',
+    color: '#C2410C',
+    count: '1,640+ Vendors',
+    description: 'Civil building contractors, electrical supervisors, plumbing masters, and waterproofers.',
+    subcategories: [
+      { id: 'cnt-1', name: 'Civil Construction & Masonry', slug: 'civil-construction', itemCount: '720+ Contractors', description: 'RCC foundation, structural beams, slab casting, brickwork, and plastering.' },
+      { id: 'cnt-2', name: 'Electricians & Industrial Wiring', slug: 'electricians', itemCount: '540+ Contractors', description: 'Three-phase wiring, DB panel installation, inverter setups, and earthing audits.' }
+    ]
+  },
+  {
+    id: 'packers-movers',
+    name: 'Packers & Movers',
+    slug: 'packers-movers',
+    iconName: 'Truck',
+    bgColor: '#F0FDFA',
+    color: '#0D9488',
+    count: '980+ Transporters',
+    description: 'Doorstep household shifting, vehicle carriers, corporate office relocation, and storage.',
+    subcategories: [
+      { id: 'pm-1', name: 'Household Goods Shifting', slug: 'household-shifting', itemCount: '620+ Movers', description: 'Multi-layer bubble wrapping, furniture dismantling, and doorstep unpack setup.' },
+      { id: 'pm-2', name: 'Intercity Car & Bike Relocation', slug: 'vehicle-relocation', itemCount: '360+ Movers', description: 'Covered hydraulic car containers and insured bike transport pan-India.' }
+    ]
+  },
+  {
+    id: 'hospitals',
+    name: 'Hospitals',
+    slug: 'hospitals',
+    iconName: 'HeartPulse',
+    bgColor: '#FFE4E6',
+    color: '#E11D48',
+    count: '890+ Facilities',
+    description: 'Multi-speciality hospitals, 24x7 emergency trauma units, diagnostic imaging, and ICU care.',
+    subcategories: [
+      { id: 'hsp-1', name: 'Multi-Speciality Hospitals', slug: 'multi-speciality', itemCount: '380+ Hospitals', description: 'Cardiology, Orthopaedics, Neurology, Oncology, and 24x7 Casualty.' },
+      { id: 'hsp-2', name: 'Diagnostic Labs & Scan Centers', slug: 'diagnostic-labs', itemCount: '510+ Centers', description: 'MRI, CT Scan, ultrasound, blood pathology, and preventive health packages.' }
+    ]
+  },
+  {
+    id: 'dentists',
+    name: 'Dentists',
+    slug: 'dentists',
+    iconName: 'Smile',
+    bgColor: '#E0F2FE',
+    color: '#0284C7',
+    count: '1,240+ Clinics',
+    description: 'Painless root canals, dental implants, invisible clear aligners, and teeth whitening.',
+    subcategories: [
+      { id: 'dnt-1', name: 'Root Canal & Laser Dentistry', slug: 'root-canal', itemCount: '640+ Clinics', description: 'Single-sitting laser RCT, ceramic crowns, and painless tooth extraction.' },
+      { id: 'dnt-2', name: 'Orthodontics & Clear Aligners', slug: 'orthodontics', itemCount: '420+ Specialists', description: 'Invisible teeth braces, aligners for adults, and smile design studios.' }
+    ]
+  },
+  {
+    id: 'wedding-planning',
+    name: 'Wedding Planning',
+    slug: 'wedding-planning',
+    iconName: 'Users',
+    bgColor: '#FDF2F8',
+    color: '#BE185D',
+    count: '1,420+ Vendors',
+    description: 'AC convention halls, royal mandap decorators, catering thalis, and drone cinematography.',
+    subcategories: [
+      { id: 'wd-1', name: 'Banquet Halls & Lawns', slug: 'banquet-halls', itemCount: '520+ Venues', description: 'Capacity from 200 to 5,000 guests, AC dining halls, and bridal guest suites.' },
+      { id: 'wd-2', name: 'Luxury Mandap Decorators', slug: 'mandap-decorators', itemCount: '460+ Studios', description: 'Exotic floral stages, thematic entry tunnels, and LED ambient lighting.' }
+    ]
   },
   {
     id: 'education',
@@ -49,77 +154,213 @@ export const CATEGORIES: Category[] = [
     bgColor: '#DCFCE7',
     color: '#16A34A',
     count: '980+ Institutes',
-    description: 'Home tutors, coaching academies, music teachers, and test prep.'
+    description: 'CBSE/ICSE home tutors, JEE/NEET coaching academies, music teachers, and test prep.'
   },
   {
-    id: 'travel-tourism',
-    name: 'Travel & Tourism',
-    slug: 'travel-tourism',
-    iconName: 'Plane',
-    bgColor: '#E0F7FA',
-    color: '#0891B2',
-    count: '740+ Agencies',
-    description: 'Airport cabs, intercity rentals, holiday packages, and tour guides.'
-  },
-  {
-    id: 'health-fitness',
-    name: 'Health & Fitness',
-    slug: 'health-fitness',
-    iconName: 'Heart',
-    bgColor: '#FFE4E6',
-    color: '#E11D48',
-    count: '1,120+ Centers',
-    description: 'Clinics, diagnostic labs, yoga studios, gyms, and physiotherapists.'
-  },
-  {
-    id: 'finance',
-    name: 'Finance',
-    slug: 'finance',
+    id: 'loans',
+    name: 'Loans',
+    slug: 'loans',
     iconName: 'Wallet',
     bgColor: '#FEF3C7',
     color: '#D97706',
-    count: '430+ Advisors',
-    description: 'Chartered accountants, tax consultants, GST filing, and mutual fund agents.'
+    count: '640+ Advisors',
+    description: 'Instant home loans, business expansion capital, gold loans, and MSME subsidy consultants.'
+  }
+];
+
+export const MOCK_MERCHANT_LISTINGS: MerchantListing[] = [
+  // REAL ESTATE - ESTATE AGENTS FOR LAND (From Image 3)
+  {
+    id: 'm-est-1',
+    name: 'K. K Group & Associates',
+    slug: 'kk-group-associates',
+    categorySlug: 'real-estate',
+    subCategorySlug: 'estate-agents-for-land',
+    rating: 5.0,
+    ratingCount: 3,
+    tag: 'Trending',
+    location: 'Near Panchayat Samiti Wada, Palghar',
+    city: 'Mumbai',
+    address: 'Shop No. 4, Ground Floor, Samiti Commercial Complex, Wada, Palghar, Maharashtra - 421303',
+    phone: '08734912840',
+    displayPhone: '08734912840',
+    whatsapp: '918734912840',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&auto=format&fit=crop&q=80',
+    services: [
+      'Estate Agents For Commercial Spaces',
+      'Estate Agents For Land',
+      'NA Plot Clearances',
+      'Industrial Land Acquisition'
+    ],
+    verified: true,
+    yearsInBusiness: 12,
+    propertyType: 'Both',
+    callPickUpRate: '98% High Call Response Rate'
   },
   {
-    id: 'automotive',
-    name: 'Automotive',
-    slug: 'automotive',
-    iconName: 'Car',
-    bgColor: '#F3E8FF',
-    color: '#7C3AED',
-    count: '860+ Garages',
-    description: 'Car wash, multi-brand service centers, tire care, and towing.'
+    id: 'm-est-2',
+    name: 'HEAVEN PROPERTY',
+    slug: 'heaven-property',
+    categorySlug: 'real-estate',
+    subCategorySlug: 'estate-agents-for-land',
+    rating: 4.7,
+    ratingCount: 106,
+    tag: 'Popular',
+    location: 'Near Station Jogeshwari West, Mumbai',
+    city: 'Mumbai',
+    address: 'G-12, Green View Apartments, SV Road, Opp Railway Station, Jogeshwari West, Mumbai - 400102',
+    phone: '08401931062',
+    displayPhone: '08401931062',
+    whatsapp: '918401931062',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80',
+    services: [
+      'Estate Agents For Residential Rental',
+      'Real Estate Agents For Land',
+      'Commercial Retail Spaces',
+      'Lease Agreements & Legal Drafting'
+    ],
+    verified: true,
+    yearsInBusiness: 15,
+    propertyType: 'Both',
+    callPickUpRate: 'High call pick up rate'
   },
   {
-    id: 'real-estate',
-    name: 'Real Estate',
-    slug: 'real-estate',
-    iconName: 'Building',
-    bgColor: '#ECFDF5',
-    color: '#059669',
-    count: '620+ Agencies',
-    description: 'Rental flats, commercial spaces, land plots, and verified brokers.'
+    id: 'm-est-3',
+    name: 'Nikhil Consultants & Prime Realtors',
+    slug: 'nikhil-consultants',
+    categorySlug: 'real-estate',
+    subCategorySlug: 'estate-agents-for-land',
+    rating: 4.9,
+    ratingCount: 84,
+    tag: 'Top Rated',
+    location: 'Bandra Kurla Complex (BKC), Mumbai',
+    city: 'Mumbai',
+    address: 'Tower B, Floor 6, Capital Plaza, G Block, BKC, Mumbai - 400051',
+    phone: '09820144552',
+    displayPhone: '09820144552',
+    whatsapp: '919820144552',
+    image: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&auto=format&fit=crop&q=80',
+    services: [
+      'High-Value Agricultural & Industrial Land',
+      'Commercial Corporate Leasing',
+      'Luxury Resale Penthouses'
+    ],
+    verified: true,
+    yearsInBusiness: 20,
+    propertyType: 'Commercial',
+    callPickUpRate: 'Instant WhatsApp & Call Support'
+  },
+
+  // HOME DECOR - ROOM FURNITURE (From Image 2)
+  {
+    id: 'm-dec-1',
+    name: 'Royal Heritage Teak & Furniture Studio',
+    slug: 'royal-heritage-furniture',
+    categorySlug: 'home-decor',
+    subCategorySlug: 'room-furniture',
+    rating: 4.9,
+    ratingCount: 245,
+    tag: 'Top Rated',
+    location: 'Tank Bazar, Mumbai',
+    city: 'Mumbai',
+    address: 'Plot 18, Timber Market Road, Tank Bazar, Mumbai - 400010',
+    phone: '09819923410',
+    displayPhone: '09819923410',
+    whatsapp: '919819923410',
+    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=80',
+    services: [
+      'Handcrafted Teakwood Sofas',
+      'King Size Storage Beds',
+      'Solid Sheesham Dining Sets',
+      'Custom Wardrobe Fabrication'
+    ],
+    verified: true,
+    yearsInBusiness: 18,
+    priceRange: '₹12,000 - ₹1,80,000',
+    callPickUpRate: 'Verified Showroom'
   },
   {
-    id: 'jobs-careers',
-    name: 'Jobs & Careers',
-    slug: 'jobs-careers',
-    iconName: 'Briefcase',
-    bgColor: '#EFF6FF',
-    color: '#2563EB',
-    count: '510+ Firms',
-    description: 'Local hiring, blue-collar staffing, recruitment, and career coaching.'
+    id: 'm-dec-2',
+    name: 'Urban Living Modern Decor Hub',
+    slug: 'urban-living-modern-decor',
+    categorySlug: 'home-decor',
+    subCategorySlug: 'room-furniture',
+    rating: 4.8,
+    ratingCount: 189,
+    tag: 'Popular',
+    location: 'Link Road, Andheri West, Mumbai',
+    city: 'Mumbai',
+    address: 'Shop 4-6, Crystal Mall Annex, Link Road, Andheri West, Mumbai - 400053',
+    phone: '09821155440',
+    displayPhone: '09821155440',
+    whatsapp: '919821155440',
+    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&auto=format&fit=crop&q=80',
+    services: [
+      'L-Shaped Recliner Sofas',
+      'Ergonomic Work From Home Desks',
+      'Minimalist TV Consoles',
+      'Accent Lounge Chairs'
+    ],
+    verified: true,
+    yearsInBusiness: 9,
+    priceRange: '₹8,500 - ₹95,000',
+    callPickUpRate: 'Quick Quotation Support'
   },
+
+  // HOME DECOR - INTERIOR DESIGNERS
   {
-    id: 'entertainment',
-    name: 'Entertainment',
-    slug: 'entertainment',
-    iconName: 'Play',
-    bgColor: '#F5F3FF',
-    color: '#6D28D9',
-    count: '390+ Venues',
-    description: 'Event organizers, sound & light rentals, turf sports, and bowling.'
+    id: 'm-dec-3',
+    name: 'Aura Spazio Interior Architects',
+    slug: 'aura-spazio-interiors',
+    categorySlug: 'home-decor',
+    subCategorySlug: 'interior-designers',
+    rating: 5.0,
+    ratingCount: 88,
+    tag: 'Top Rated',
+    location: 'Jubilee Hills / Banjara Hills, Hyderabad',
+    city: 'Hyderabad',
+    address: 'Road No 36, Beside Metro Pillar 22, Jubilee Hills, Hyderabad - 500033',
+    phone: '09849077651',
+    displayPhone: '09849077651',
+    whatsapp: '919849077651',
+    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&auto=format&fit=crop&q=80',
+    services: [
+      '3D Photorealistic Interior Walkthroughs',
+      'Turnkey Residential Villa Renovation',
+      'Luxury Acrylic Modular Kitchens',
+      'Vastu Compliant Layout Drafting'
+    ],
+    verified: true,
+    yearsInBusiness: 14,
+    callPickUpRate: 'Free 3D Estimate Consultation'
+  },
+
+  // HOME DECOR - LAMPS & LIGHTS
+  {
+    id: 'm-dec-4',
+    name: 'Lumiere Crystal & Architectural Lighting',
+    slug: 'lumiere-lighting',
+    categorySlug: 'home-decor',
+    subCategorySlug: 'lamps-lights',
+    rating: 4.8,
+    ratingCount: 112,
+    tag: 'Trending',
+    location: 'Lohar Chawl, Marine Lines, Mumbai',
+    city: 'Mumbai',
+    address: '144, Electric Market, Lohar Chawl, Mumbai - 400002',
+    phone: '09820033112',
+    displayPhone: '09820033112',
+    whatsapp: '919820033112',
+    image: 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=600&auto=format&fit=crop&q=80',
+    services: [
+      'Bohemian Crystal Chandeliers',
+      'Architectural COB LED Magnetic Tracks',
+      'Vintage Brass Lanterns & Sconces',
+      'Smart WiFi App-Controlled Mood Lights'
+    ],
+    verified: true,
+    yearsInBusiness: 22,
+    priceRange: '₹1,500 - ₹3,50,000'
   }
 ];
 
@@ -148,10 +389,6 @@ export const POPULAR_SERVICES: ServiceItem[] = [
       { id: 'p-1', name: 'South Indian Tiffin Combo', price: 149, description: '2 Ghee Masala Dosas, 2 Steamed Idlis, Vada with 3 varieties of chutneys & sambar.', popular: true },
       { id: 'p-2', name: 'Royal Dum Biryani Feast (Serves 2)', price: 449, description: 'Authentic Hyderabadi Dum Biryani, Mirchi ka Salan, Raita & Double ka Meetha.' },
       { id: 'p-3', name: 'Assorted Traditional Sweets Box (1kg)', price: 620, description: 'Motichoor Ladoo, Kaju Katli, Besan Ladoo, and Dry Fruit Halwa.' }
-    ],
-    faqs: [
-      { q: 'How fast is food delivered in my area?', a: 'Neighborhood restaurant orders are usually dispatched within 10 minutes and reach your doorstep within 25 to 35 minutes.' },
-      { q: 'Can I pay via cash on delivery or UPI?', a: 'Yes! Needora accepts all UPI apps (GPay, PhonePe, Paytm), credit/debit cards, and cash on delivery.' }
     ]
   },
   {
@@ -167,21 +404,7 @@ export const POPULAR_SERVICES: ServiceItem[] = [
     duration: '15-30 mins',
     providerName: 'Direct from verified farm marts',
     badge: 'Daily Fresh',
-    description: 'Handpicked fresh farm vegetables, seasonal fruits, organic cold-pressed oils, premium grains, and everyday pantry essentials delivered in under 30 minutes.',
-    features: [
-      'Zero preservative farm produce delivered fresh every morning',
-      'Direct sourcing from local verified farmers & mandi distributors',
-      '100% replacement guarantee if any vegetable or fruit is bruised',
-      'Weighing scale verification at your doorstep upon request'
-    ],
-    packages: [
-      { id: 'g-1', name: 'Essential Kitchen Veggie Basket (5kg)', price: 299, description: 'Tomatoes, Onions, Potatoes, Coriander, Green Chilies, Ginger, and Spinach.', popular: true },
-      { id: 'g-2', name: 'Organic Fresh Fruits Hamper (3kg)', price: 449, description: 'Pomegranate, Apples, Robusta Bananas, Papaya, and Sweet Oranges.' },
-      { id: 'g-3', name: 'Monthly Staple Ration Pack', price: 1499, description: '10kg Premium Sona Masoori Rice, 5kg Whole Wheat Atta, 2kg Toor Dal, 1L Cold-Pressed Ghee.' }
-    ],
-    faqs: [
-      { q: 'Are the vegetables washed and sanitized?', a: 'Yes, all farm greens and produce undergo ozone purification and hygienic food-grade sorting before packing.' }
-    ]
+    description: 'Handpicked fresh farm vegetables, seasonal fruits, organic cold-pressed oils, premium grains, and everyday pantry essentials delivered in under 30 minutes.'
   },
   {
     id: 'serv-3',
@@ -196,21 +419,7 @@ export const POPULAR_SERVICES: ServiceItem[] = [
     duration: '2-4 hours',
     providerName: 'Police-verified cleaning partners',
     badge: 'Best Seller',
-    description: 'Comprehensive residential deep cleaning by background-verified professionals using industrial-grade scrubbers, eco-friendly detergents, and hospital-grade sanitizers.',
-    features: [
-      'Police-verified & Aadhaar-authenticated service technicians',
-      'Hospital-grade non-toxic European cleaning chemicals',
-      'Specialized motorized rotary disc scrubbing machines',
-      '30-day rework guarantee if you are not 100% satisfied'
-    ],
-    packages: [
-      { id: 'hc-1', name: 'Bathroom & Kitchen Intensive Clean', price: 899, description: 'Deep descaling of wall tiles, taps, exhaust fans, sink, and grout line whitening.', popular: true },
-      { id: 'hc-2', name: 'Full 2BHK Home Deep Cleaning', price: 1799, description: 'All rooms, balconies, fans, windows, cupboards exterior, and floor machine scrubbing.' },
-      { id: 'hc-3', name: 'Luxury 3BHK / Villa Deep Sanitization', price: 2599, description: 'Comprehensive top-to-bottom scrub, sofa shampooing, chimney degreasing, and steam sanitization.' }
-    ],
-    faqs: [
-      { q: 'Do I need to provide buckets, mops, or cleaning chemicals?', a: 'No, our team arrives fully equipped with heavy-duty vacuums, scrubbing machines, ladders, and eco-friendly chemicals.' }
-    ]
+    description: 'Comprehensive residential deep cleaning by background-verified professionals using industrial-grade scrubbers, eco-friendly detergents, and hospital-grade sanitizers.'
   },
   {
     id: 'serv-4',
@@ -225,21 +434,7 @@ export const POPULAR_SERVICES: ServiceItem[] = [
     duration: '45-90 mins',
     providerName: 'Certified estheticians & stylists',
     badge: 'Top Rated',
-    description: 'Pamper yourself with premium salon & spa services in the comfort and privacy of your home. Delivered exclusively by certified beauticians with single-use sterile kits.',
-    features: [
-      '100% single-use mono-dose packs opened right in front of you',
-      'Branded products including L’Oreal, Cheryl’s, Lotus, and Sara',
-      'Strict post-service clean-up — we leave your space spotless',
-      'Female beauticians assigned for female clients'
-    ],
-    packages: [
-      { id: 'bs-1', name: 'Express Glow Facial & Threading', price: 499, description: 'Herbal fruit cleanse, exfoliating scrub, rejuvenating mask, and eyebrow threading.', popular: true },
-      { id: 'bs-2', name: 'Mani-Pedi Spa & Relaxing Head Massage', price: 799, description: 'Rose petal foot soak, cuticles care, heel scrub, and 20-min warm coconut oil massage.' },
-      { id: 'bs-3', name: 'Bridal Glow & Full Body Polishing', price: 2199, description: 'Gold radiance treatment, full body chocolate wax, and lavender aroma massage.' }
-    ],
-    faqs: [
-      { q: 'Is it hygienic to take salon services at home?', a: 'Yes! Our beauticians wear sanitised aprons, use disposable sheets, and single-use sealed kits.' }
-    ]
+    description: 'Pamper yourself with premium salon & spa services in the comfort and privacy of your home. Delivered exclusively by certified beauticians with single-use sterile kits.'
   },
   {
     id: 'serv-5',
@@ -254,21 +449,7 @@ export const POPULAR_SERVICES: ServiceItem[] = [
     duration: 'Per month',
     providerName: 'CBSE, ICSE & State Board tutors',
     badge: 'Verified',
-    description: 'Find verified, compassionate home tutors and subject-matter experts for K-12 academics, engineering competitive exams, classical music, and spoken English.',
-    features: [
-      'Background and educational credential-checked tutors',
-      'Free 1-hour demo session before committing to the month',
-      'Weekly progress diagnostic tests and direct parent feedback',
-      'Flexible scheduling: home visits or 1-on-1 live interactive sessions'
-    ],
-    packages: [
-      { id: 'tl-1', name: 'Primary School All-Subjects (Classes 1-5)', price: 1499, description: 'Maths, Science, English, Hindi/Regional language — 3 days/week, 1 hour each.', popular: true },
-      { id: 'tl-2', name: 'Secondary Maths & Science (Classes 6-10)', price: 2499, description: 'Conceptual clarity, board exam preparation, NCERT solving — 4 days/week.' },
-      { id: 'tl-3', name: 'Senior Secondary Physics, Chemistry & Maths', price: 3999, description: 'JEE / NEET foundation, doubt-solving, formula practice — 5 days/week.' }
-    ],
-    faqs: [
-      { q: 'Can I change the tutor if my child is not comfortable?', a: 'Absolutely. We offer a no-questions-asked replacement guarantee within the first 14 days.' }
-    ]
+    description: 'Find verified, compassionate home tutors and subject-matter experts for K-12 academics, engineering competitive exams, classical music, and spoken English.'
   }
 ];
 
@@ -352,7 +533,7 @@ export const MOCK_MERCHANTS: Merchant[] = [
   {
     id: 'm-101',
     businessName: 'Sri Balaji Sweets & Traditional Savories',
-    category: 'Food & Dining',
+    category: 'Restaurants',
     ownerName: 'Venkat Rao',
     phone: '+91 98490 12345',
     email: 'contact@sribalajisweets.in',
@@ -389,45 +570,6 @@ export const MOCK_MERCHANTS: Merchant[] = [
       gstin: '36AAHCP4491D1Z2',
       tradeLicense: 'GHMC/TL/2024/1109'
     }
-  },
-  {
-    id: 'm-103',
-    businessName: 'Green Harvest Organics',
-    category: 'Shopping',
-    ownerName: 'Ananya Deshmukh',
-    phone: '+91 97654 32109',
-    email: 'support@greenharvest.co',
-    city: 'Hyderabad',
-    pincode: '500033',
-    address: 'Lane 4, Jubilee Hills Checkpost',
-    status: 'verified',
-    badgeLevel: 'Silver',
-    rating: 4.7,
-    totalOrders: 650,
-    joinedDate: '18 Apr 2024',
-    documents: {
-      gstin: '36BBCDE7712M1Z0',
-      fssai: '13623011000998'
-    }
-  },
-  {
-    id: 'm-104',
-    businessName: 'Royal Auto Garage & Detailing',
-    category: 'Automotive',
-    ownerName: 'Mohd. Farooq',
-    phone: '+91 91234 56789',
-    email: 'farooq@royalautogarage.com',
-    city: 'Hyderabad',
-    pincode: '500008',
-    address: 'Near Pillar 140, Mehdipatnam',
-    status: 'pending',
-    badgeLevel: 'Bronze',
-    rating: 4.6,
-    totalOrders: 110,
-    joinedDate: '10 Oct 2024',
-    documents: {
-      tradeLicense: 'GHMC/TL/2024/9934'
-    }
   }
 ];
 
@@ -455,30 +597,6 @@ export const MOCK_ORDERS: Order[] = [
     date: '21 Oct 2025, 02:30 PM',
     slot: 'Tomorrow, 10:00 AM - 01:00 PM',
     trackingStep: 2
-  },
-  {
-    id: 'ord-8874',
-    orderNumber: 'NDR-2025-8874',
-    customerId: 'cust-1',
-    customerName: 'Priya Sharma',
-    customerPhone: '+91 98765 43210',
-    customerAddress: 'Flat 402, Sai Residency, Indiranagar, Bengaluru - 560038',
-    merchantId: 'm-101',
-    merchantName: 'Sri Balaji Sweets & Traditional Savories',
-    items: [
-      { title: 'Pure Ghee Motichoor Ladoo (500g)', quantity: 2, price: 340 },
-      { title: 'Special Madras Mixture (250g)', quantity: 1, price: 120 }
-    ],
-    subtotal: 800,
-    deliveryFee: 40,
-    tax: 40,
-    total: 880,
-    paymentMethod: 'UPI',
-    paymentStatus: 'Paid',
-    status: 'Delivered',
-    date: '19 Oct 2025, 05:15 PM',
-    slot: 'Delivered at 06:05 PM',
-    trackingStep: 4
   }
 ];
 
@@ -499,24 +617,6 @@ export const MOCK_VERIFICATIONS: VerificationRequest[] = [
     riskScore: 'Low',
     duplicateMatchFound: false,
     duplicateNotes: 'Clear phone and location audit. Physical trade license verified.'
-  },
-  {
-    id: 'v-302',
-    merchantId: 'm-105',
-    businessName: 'Kaveri Pure Veg Tiffin Center',
-    legalEntityName: 'Kaveri Foods Enterprise',
-    category: 'Food & Dining',
-    ownerName: 'Suresh Kumar',
-    phone: '+91 98480 55443',
-    address: 'Opposite Metro Station, Ameerpet, Hyderabad',
-    pincode: '500016',
-    gstin: '36ABCK9876Q1Z3',
-    fssaiNumber: '13621011000889',
-    submittedAt: '18 Oct 2025, 04:45 PM',
-    status: 'pending',
-    riskScore: 'Medium',
-    duplicateMatchFound: true,
-    duplicateNotes: 'Potential duplicate candidate: "Kaveri Sweets & Fast Food" registered within 150m radius. Manual inspection recommended.'
   }
 ];
 
@@ -534,20 +634,6 @@ export const MOCK_COMPLAINTS: ComplaintTicket[] = [
     priority: 'Medium',
     date: '20 Oct 2025',
     resolution: 'Store contacted. Replacement box dispatched via express courier.'
-  },
-  {
-    id: 'cmp-502',
-    ticketNumber: 'TKT-9884',
-    customerName: 'Anil Kulkarni',
-    customerPhone: '+91 97223 44556',
-    orderNumber: 'NDR-2025-8790',
-    merchantName: 'CleanPro Hygiene Solutions',
-    category: 'Service Timing',
-    issue: 'Technician arrived 25 minutes late due to heavy rain. Service was good.',
-    status: 'Resolved',
-    priority: 'Low',
-    date: '17 Oct 2025',
-    resolution: 'Apologized to customer, ₹150 credit voucher issued for next booking.'
   }
 ];
 
@@ -584,57 +670,6 @@ export const BLOG_REELS: BlogReel[] = [
     description: 'See the power of our Italian rotary steam scrubber tackling stubborn grease on chimney mesh. 100% police-verified technicians with hospital grade sanitizers.',
     musicTrack: 'Trending Beat • Clean Vibes India',
     duration: '0:35',
-    verified: true
-  },
-  {
-    id: 'reel-3',
-    title: 'From Organic Farms to Your Doorstep in 20 Minutes 🥦🥕',
-    merchantName: 'Green Harvest Organics',
-    merchantCity: 'Jubilee Hills, Hyderabad',
-    category: 'Shopping',
-    thumbnail: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=900&auto=format&fit=crop&q=80',
-    offerText: 'Free Fresh Palak & Coriander with Every Veggie Basket',
-    likes: 9840,
-    commentsCount: 219,
-    sharesCount: 890,
-    tags: ['#OrganicIndia', '#DailyHarvest', '#HealthyLiving', '#FarmFresh'],
-    description: 'Watch how our morning batch of hydroponic greens and farm-fresh bell peppers are inspected, weighed, and sealed into zero-plastic biodegradable totes for lightning delivery.',
-    musicTrack: 'Acoustic Morning • Green Rhythms',
-    duration: '0:28',
-    verified: true
-  },
-  {
-    id: 'reel-4',
-    title: 'Ayurvedic Kesh Kanti Hair Spa: Ancient Herbs for Modern Stress 🌿💆‍♀️',
-    merchantName: 'Dr. Kavita Wellness Studio',
-    merchantCity: 'Indiranagar, Bengaluru',
-    category: 'Beauty & Wellness',
-    thumbnail: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=900&auto=format&fit=crop&q=80',
-    offerText: 'Get 25% OFF on First At-Home Spa Appointment',
-    likes: 18900,
-    commentsCount: 462,
-    sharesCount: 2140,
-    tags: ['#AyurvedaSpa', '#SelfCareSunday', '#NaturalBeauty', '#SalonAtHome'],
-    description: 'Warm sesame oil infused with Brahmi, Bhringraj and Amla gently massaged into the scalp followed by herbal steam infusion. Book your relaxing session today.',
-    musicTrack: 'Flute & Sitar Meditation • Traditional Chants',
-    duration: '0:48',
-    verified: true
-  },
-  {
-    id: 'reel-5',
-    title: 'How 1-on-1 Personalized Tutoring Helped Aarav Score 98% in Maths 📚🎯',
-    merchantName: 'Acuity Scholars Academy',
-    merchantCity: 'Hitec City, Hyderabad',
-    category: 'Education',
-    thumbnail: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=900&auto=format&fit=crop&q=80',
-    offerText: 'Book Free 60-Minute Diagnostic Demo Class',
-    likes: 12400,
-    commentsCount: 330,
-    sharesCount: 1450,
-    tags: ['#CBSETips', '#MathsMadeEasy', '#TutorsNearMe', '#EducationFirst'],
-    description: 'No rote learning, only first-principle visual intuition. Meet our verified math educator Shweta Sen as she explains algebraic factorisation using 3D blocks.',
-    musicTrack: 'Upbeat Focus • LoFi Study Study Study',
-    duration: '0:50',
     verified: true
   }
 ];

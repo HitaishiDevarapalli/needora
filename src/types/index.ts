@@ -1,5 +1,14 @@
 export type UserRole = 'customer' | 'merchant' | 'admin';
 
+export interface SubCategory {
+  id: string;
+  name: string;
+  slug: string;
+  iconName?: string;
+  itemCount: string;
+  description: string;
+}
+
 export interface Category {
   id: string;
   name: string;
@@ -9,6 +18,31 @@ export interface Category {
   bgColor: string;
   count?: string;
   description?: string;
+  subcategories?: SubCategory[];
+}
+
+export interface MerchantListing {
+  id: string;
+  name: string;
+  slug: string;
+  categorySlug: string;
+  subCategorySlug: string;
+  rating: number;
+  ratingCount: number;
+  tag?: 'Trending' | 'Popular' | 'Top Rated' | 'Quick Response';
+  location: string;
+  city: string;
+  address: string;
+  phone: string;
+  displayPhone: string;
+  whatsapp: string;
+  image: string;
+  services: string[];
+  callPickUpRate?: string;
+  verified: boolean;
+  yearsInBusiness?: number;
+  propertyType?: 'Residential' | 'Commercial' | 'Both';
+  priceRange?: string;
 }
 
 export interface ServiceItem {

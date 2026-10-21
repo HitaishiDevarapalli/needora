@@ -51,42 +51,50 @@ export default function Hero({ onSearchSubmit, onOpenVoiceSearch }: HeroProps) {
               From local services to online solutions, Needora connects you with trusted providers — making your life easier, faster and smarter.
             </p>
 
-            {/* Search Bar Container */}
+            {/* Search Bar Container matching Image 1 layout */}
             <div className="w-full max-w-2xl">
               <form 
                 onSubmit={handleSearch}
-                className="relative flex items-center bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-200 p-2 focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10 transition-all"
+                className="relative flex flex-col sm:flex-row items-center bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-200 p-2 focus-within:border-brand-500 focus-within:ring-4 focus-within:ring-brand-500/10 transition-all gap-2 sm:gap-0"
               >
-                <div className="pl-3 pr-2 text-slate-400">
-                  <Search className="w-5 h-5" />
+                {/* Location indicator inside Search Bar matching Image 1 */}
+                <div className="flex items-center gap-1.5 px-3 py-2 bg-slate-50 border sm:border-r sm:border-y-0 sm:border-l-0 border-slate-200 rounded-xl sm:rounded-none sm:rounded-l-xl text-xs font-semibold text-slate-700 shrink-0 cursor-pointer">
+                  <MapPin className="w-4 h-4 text-blue-600 shrink-0" />
+                  <span className="truncate max-w-[130px]">Tank Bazar, Mumbai</span>
                 </div>
 
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for services, professionals, or categories..."
-                  className="w-full py-2.5 px-2 text-sm sm:text-base text-slate-800 placeholder-slate-400 bg-transparent focus:outline-none"
-                />
+                <div className="flex items-center flex-1 w-full">
+                  <div className="pl-3 pr-2 text-slate-400">
+                    <Search className="w-4 h-4" />
+                  </div>
 
-                {/* Voice Search Button (C4 Vernacular Voice Module) */}
-                <button
-                  type="button"
-                  onClick={onOpenVoiceSearch}
-                  className="p-2 text-slate-400 hover:text-brand-600 hover:bg-slate-50 rounded-xl transition-colors mr-2"
-                  title="Speak in Telugu, Hindi, or English"
-                  aria-label="Voice Search"
-                >
-                  <Mic className="w-5 h-5" />
-                </button>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search for Spa, Home Decor, Doctors, Services..."
+                    className="w-full py-2.5 px-2 text-xs sm:text-sm text-slate-800 placeholder-slate-400 bg-transparent focus:outline-none"
+                  />
 
-                {/* Search Action Button */}
-                <button
-                  type="submit"
-                  className="shrink-0 px-6 sm:px-8 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-sm sm:text-base rounded-xl shadow-md shadow-blue-500/20 transition-all"
-                >
-                  Search
-                </button>
+                  {/* Voice Search Button */}
+                  <button
+                    type="button"
+                    onClick={onOpenVoiceSearch}
+                    className="p-2 text-slate-400 hover:text-brand-600 hover:bg-slate-50 rounded-xl transition-colors mr-2"
+                    title="Speak in Telugu, Hindi, or English"
+                    aria-label="Voice Search"
+                  >
+                    <Mic className="w-4 h-4" />
+                  </button>
+
+                  {/* Search Action Button */}
+                  <button
+                    type="submit"
+                    className="shrink-0 px-6 sm:px-8 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md shadow-blue-500/20 transition-all"
+                  >
+                    Search
+                  </button>
+                </div>
               </form>
 
               {/* Popular tags below search bar */}
