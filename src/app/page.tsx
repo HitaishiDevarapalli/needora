@@ -6,6 +6,7 @@ import Hero from '@/components/Hero';
 import CategoriesSection from '@/components/CategoriesSection';
 import PopularServicesSection from '@/components/PopularServicesSection';
 import WhyChooseSection from '@/components/WhyChooseSection';
+import VideoReelsSection from '@/components/VideoReelsSection';
 import FeaturedSection from '@/components/FeaturedSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import BottomCtaSection from '@/components/BottomCtaSection';
@@ -91,6 +92,9 @@ export default function Home() {
 
         {/* Why Choose Needora + App Mockup matching reference */}
         <WhyChooseSection />
+
+        {/* Video Stories & Merchant Reels for Blogs (with Upload Modal) */}
+        <VideoReelsSection />
 
         {/* Featured on Needora + Stats row matching reference */}
         <FeaturedSection />
