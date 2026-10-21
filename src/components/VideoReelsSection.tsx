@@ -155,8 +155,18 @@ export default function VideoReelsSection() {
 
       {/* POPUP VIDEO PLAYER MODAL */}
       {selectedVideo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="relative w-full max-w-sm sm:max-w-md h-[85vh] bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-slate-800 flex flex-col justify-end animate-in zoom-in-95 duration-200">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md cursor-pointer"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setSelectedVideo(null);
+            }
+          }}
+        >
+          <div 
+            className="relative w-full max-w-sm sm:max-w-md h-[85vh] bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-slate-800 flex flex-col justify-end animate-in zoom-in-95 duration-200 cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          >
             
             {/* Background Media */}
             <img
@@ -168,8 +178,14 @@ export default function VideoReelsSection() {
 
             {/* Close Button */}
             <button
-              onClick={() => setSelectedVideo(null)}
-              className="absolute top-4 right-4 z-30 p-2 bg-black/50 hover:bg-black/80 text-white rounded-full transition-all"
+              type="button"
+              aria-label="Close video player"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setSelectedVideo(null);
+              }}
+              className="absolute top-4 right-4 z-30 p-2.5 bg-black/60 hover:bg-black/90 text-white rounded-full transition-all cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -218,8 +234,18 @@ export default function VideoReelsSection() {
 
       {/* MERCHANT VIDEO UPLOAD MODAL */}
       {uploadModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs cursor-pointer"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setUploadModalOpen(false);
+            }
+          }}
+        >
+          <div 
+            className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200 cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
@@ -231,8 +257,14 @@ export default function VideoReelsSection() {
                 </div>
               </div>
               <button
-                onClick={() => setUploadModalOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-full"
+                type="button"
+                aria-label="Close upload modal"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setUploadModalOpen(false);
+                }}
+                className="p-2 text-slate-400 hover:text-slate-700 rounded-full cursor-pointer hover:bg-slate-200/50"
               >
                 <X className="w-5 h-5" />
               </button>

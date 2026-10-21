@@ -12,6 +12,7 @@ import {
   MapPin, 
   Upload, 
   ArrowRight, 
+  ArrowLeft,
   Store,
   Users,
   TrendingUp,
@@ -43,12 +44,28 @@ export default function FreeListingPage() {
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
-        {/* Breadcrumb */}
-        <nav className="text-xs text-slate-500 mb-6 flex items-center gap-2">
-          <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-          <span>/</span>
-          <span className="text-slate-800 font-semibold">Free Business Listing</span>
-        </nav>
+        {/* Breadcrumb & Back */}
+        <div className="flex items-center gap-3 mb-6">
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.history.length > 1) {
+                window.history.back();
+              } else {
+                window.location.href = '/';
+              }
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 shadow-xs hover:border-blue-400 transition-all cursor-pointer"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back</span>
+          </button>
+          <nav className="text-xs text-slate-500 flex items-center gap-2">
+            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
+            <span>/</span>
+            <span className="text-slate-800 font-semibold">Free Business Listing</span>
+          </nav>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start mb-16">
           

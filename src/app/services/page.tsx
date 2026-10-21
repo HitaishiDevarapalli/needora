@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { POPULAR_SERVICES, CATEGORIES } from '@/data/mockData';
 import Header from '@/components/Header';
 import BottomCtaSection from '@/components/BottomCtaSection';
-import { Star, ArrowRight, ShieldCheck, Clock, CheckCircle2 } from 'lucide-react';
+import { Star, ArrowRight, ArrowLeft, ShieldCheck, Clock, CheckCircle2 } from 'lucide-react';
 
 export const metadata = {
   title: 'All Services — Needora',
@@ -19,11 +19,20 @@ export default function ServicesPage() {
         
         {/* Breadcrumb & Title */}
         <div className="mb-8">
-          <nav className="text-xs text-slate-500 mb-2 flex items-center gap-2">
-            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-            <span>/</span>
-            <span className="text-slate-800 font-semibold">Services</span>
-          </nav>
+          <div className="flex items-center gap-3 mb-3">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 shadow-xs hover:border-blue-400 transition-all"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Home</span>
+            </Link>
+            <nav className="text-xs text-slate-500 flex items-center gap-2">
+              <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
+              <span>/</span>
+              <span className="text-slate-800 font-semibold">Services</span>
+            </nav>
+          </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             Explore All Local Services
           </h1>

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -18,6 +20,7 @@ import {
   GraduationCap, 
   Wallet,
   ArrowRight,
+  ArrowLeft,
   ShieldCheck,
   Star,
   MapPin,
@@ -50,14 +53,31 @@ export default function SingleCategoryPage({ params }: CategoryPageProps) {
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Breadcrumb Navigation */}
-        <nav className="text-xs text-slate-500 mb-6 flex items-center gap-2">
-          <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-          <span>/</span>
-          <Link href="/categories" className="hover:text-blue-600 transition-colors">Categories</Link>
-          <span>/</span>
-          <span className="text-slate-800 font-semibold">{category.name}</span>
-        </nav>
+        {/* Top Navigation Row with Back Button */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.history.length > 1) {
+                window.history.back();
+              } else {
+                window.location.href = '/categories';
+              }
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 shadow-xs transition-all cursor-pointer hover:border-blue-400"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back</span>
+          </button>
+          
+          <nav className="text-xs text-slate-500 flex items-center gap-2">
+            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
+            <span>/</span>
+            <Link href="/categories" className="hover:text-blue-600 transition-colors">Categories</Link>
+            <span>/</span>
+            <span className="text-slate-800 font-semibold">{category.name}</span>
+          </nav>
+        </div>
 
         {/* Category Header Banner with Search (Matching Justdial Image 2) */}
         <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 mb-8 shadow-xs">

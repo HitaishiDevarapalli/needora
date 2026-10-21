@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import BottomCtaSection from '@/components/BottomCtaSection';
-import { ShieldCheck, Users, Store, HeartHandshake, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Users, Store, HeartHandshake, CheckCircle2, ArrowLeft } from 'lucide-react';
 
 export const metadata = {
   title: 'About Us — Needora',
@@ -16,12 +16,21 @@ export default function AboutPage() {
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
-        {/* Breadcrumb */}
-        <nav className="text-xs text-slate-500 mb-6 flex items-center gap-2">
-          <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-          <span>/</span>
-          <span className="text-slate-800 font-semibold">About Us</span>
-        </nav>
+        {/* Breadcrumb & Back */}
+        <div className="flex items-center gap-3 mb-6">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 shadow-xs hover:border-blue-400 transition-all"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Home</span>
+          </Link>
+          <nav className="text-xs text-slate-500 flex items-center gap-2">
+            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
+            <span>/</span>
+            <span className="text-slate-800 font-semibold">About Us</span>
+          </nav>
+        </div>
 
         {/* Hero */}
         <div className="bg-white rounded-3xl border border-slate-200 p-8 sm:p-12 mb-12 shadow-xs">

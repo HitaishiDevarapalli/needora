@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Mic, Volume2, Globe, ArrowRight, Search, CheckCircle2 } from 'lucide-react';
 
 interface VoiceSearchModalProps {
@@ -16,6 +16,17 @@ export default function VoiceSearchModal({ isOpen, onClose, onSelectResult }: Vo
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('నాకు దగ్గరలో మంచి స్వీట్స్ షాప్ కావాలి');
   const [detectedIntent, setDetectedIntent] = useState('Category: Food & Dining • Query: Fresh Sweets Shop');
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   const samplePrompts = {
     Telugu: [
@@ -49,11 +60,21 @@ export default function VoiceSearchModal({ isOpen, onClose, onSelectResult }: Vo
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs cursor-pointer"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
+      <div 
+        className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200 cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      >
         
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-100">
+        <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/50">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
               <Mic className="w-4 h-4" />
@@ -64,8 +85,14 @@ export default function VoiceSearchModal({ isOpen, onClose, onSelectResult }: Vo
             </div>
           </div>
           <button
-            onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full transition-colors"
+            type="button"
+            aria-label="Close modal"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClose();
+            }}
+            className="p-2 text-slate-400 hover:text-slate-800 hover:bg-slate-200/60 rounded-full transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>

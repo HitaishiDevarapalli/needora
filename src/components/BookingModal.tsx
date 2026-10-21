@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   X, 
   Calendar, 
@@ -33,6 +33,17 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
   const [isSuccess, setIsSuccess] = useState(false);
   const [enquiryRef, setEnquiryRef] = useState('');
 
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   const handleConfirm = (e: React.FormEvent) => {
     e.preventDefault();
     const newEnquiryRef = 'ENQ-' + Math.floor(100000 + Math.random() * 900000);
@@ -52,8 +63,18 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-      <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs cursor-pointer"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
+      <div 
+        className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200 cursor-default"
+        onClick={(e) => e.stopPropagation()}
+      >
         
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/50">
@@ -71,8 +92,14 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
             </div>
           </div>
           <button
-            onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded-full transition-colors"
+            type="button"
+            aria-label="Close modal"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClose();
+            }}
+            className="p-2 text-slate-400 hover:text-slate-800 hover:bg-slate-200/60 rounded-full transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -108,8 +135,13 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
             </div>
 
             <button
-              onClick={onClose}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-sm text-xs"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onClose();
+              }}
+              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-sm text-xs cursor-pointer"
             >
               Done & Return to Marketplace
             </button>
@@ -149,7 +181,7 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">Your Mobile Phone *</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Your Mobile Phone (for SMS / Call) *</label>
                   <input
                     type="tel"
                     required
@@ -162,18 +194,15 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Your City / Area *</label>
-                <div className="relative">
-                  <MapPin className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
-                  <input
-                    type="text"
-                    required
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="e.g. Indiranagar, Bengaluru or Tank Bazar, Mumbai"
-                    className="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 text-slate-800 font-medium"
-                  />
-                </div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Your Area / Address</label>
+                <input
+                  type="text"
+                  required
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="e.g. Indiranagar, Bengaluru or GPS detected location"
+                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 text-slate-800 font-medium"
+                />
               </div>
 
               <div>
@@ -214,7 +243,7 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
             {/* Submit button */}
             <button
               type="submit"
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2"
+              className="w-full py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2 cursor-pointer"
             >
               <Send className="w-4 h-4" />
               <span>Send Enquiry to {service.providerName}</span>

@@ -92,13 +92,20 @@ export default function BlogReelsPage() {
       
       {/* Top Floating App Bar */}
       <header className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-4 sm:px-8 py-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent">
-        <Link 
-          href="/" 
-          className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all shadow-md"
+        <button 
+          type="button"
+          onClick={() => {
+            if (typeof window !== 'undefined' && window.history.length > 1) {
+              window.history.back();
+            } else {
+              window.location.href = '/';
+            }
+          }}
+          className="flex items-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all shadow-md cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Marketplace</span>
-        </Link>
+          <span>Back</span>
+        </button>
 
         {/* Brand center */}
         <div className="flex items-center gap-2">

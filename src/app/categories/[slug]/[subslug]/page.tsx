@@ -18,6 +18,7 @@ import {
   Send, 
   ChevronRight, 
   ArrowRight,
+  ArrowLeft,
   Filter,
   CheckCircle2
 } from 'lucide-react';
@@ -72,18 +73,36 @@ export default function SubCategoryListingsPage({ params }: SubCategoryPageProps
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
-        {/* Breadcrumb Navigation matching Image 3 */}
-        <nav className="text-[11px] text-slate-500 mb-3 flex flex-wrap items-center gap-1.5 font-medium">
-          <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-          <span>&gt;</span>
-          <Link href="/categories" className="hover:text-blue-600 transition-colors">{category.name}</Link>
-          <span>&gt;</span>
-          <Link href={`/categories/${category.slug}`} className="hover:text-blue-600 transition-colors">{category.name} in Mumbai</Link>
-          <span>&gt;</span>
-          <span className="text-slate-800 font-semibold">{subcategory.name} in Mumbai</span>
-          <span>&gt;</span>
-          <span className="text-slate-400">5543+ Listings</span>
-        </nav>
+        {/* Top Navigation Row with Back Button */}
+        <div className="flex flex-wrap items-center gap-3 mb-4">
+          <button
+            type="button"
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.history.length > 1) {
+                window.history.back();
+              } else {
+                window.location.href = `/categories/${category.slug}`;
+              }
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 shadow-xs transition-all cursor-pointer hover:border-blue-400"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back</span>
+          </button>
+
+          {/* Breadcrumb Navigation matching Image 3 */}
+          <nav className="text-[11px] text-slate-500 flex flex-wrap items-center gap-1.5 font-medium">
+            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
+            <span>&gt;</span>
+            <Link href="/categories" className="hover:text-blue-600 transition-colors">{category.name}</Link>
+            <span>&gt;</span>
+            <Link href={`/categories/${category.slug}`} className="hover:text-blue-600 transition-colors">{category.name} in Mumbai</Link>
+            <span>&gt;</span>
+            <span className="text-slate-800 font-semibold">{subcategory.name} in Mumbai</span>
+            <span>&gt;</span>
+            <span className="text-slate-400">5543+ Listings</span>
+          </nav>
+        </div>
 
         {/* Page Heading matching Image 3 */}
         <div className="mb-5">

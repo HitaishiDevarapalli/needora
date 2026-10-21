@@ -114,7 +114,7 @@ export default function Home() {
       <VoiceSearchModal
         isOpen={voiceSearchOpen}
         onClose={() => setVoiceSearchOpen(false)}
-        onSelectResult={(query) => {
+        onSelectResult={(query: string) => {
           handleSearchSubmit(query);
         }}
       />

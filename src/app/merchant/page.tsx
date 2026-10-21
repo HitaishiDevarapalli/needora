@@ -16,6 +16,7 @@ import {
   Search, 
   Filter, 
   ArrowUpRight,
+  ArrowLeft,
   Phone,
   Send,
   Eye,
@@ -129,9 +130,10 @@ export default function MerchantDashboard() {
           </span>
           <Link
             href="/"
-            className="text-xs font-semibold text-slate-600 hover:text-blue-600 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-blue-600 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors shadow-xs"
           >
-            Switch to Customer View
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Marketplace</span>
           </Link>
         </div>
       </header>

@@ -385,16 +385,32 @@ export default function Header({
 
       {/* INTERACTIVE PRECISE GPS LOCATION DETECTION MODAL */}
       {locationModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs cursor-pointer"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setLocationModalOpen(false);
+            }
+          }}
+        >
+          <div 
+            className="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200 cursor-default"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-blue-600" />
                 <h3 className="font-bold text-slate-900 text-base">Select Your Precise Location</h3>
               </div>
               <button
-                onClick={() => setLocationModalOpen(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-full"
+                type="button"
+                aria-label="Close location modal"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setLocationModalOpen(false);
+                }}
+                className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-200/50 rounded-full cursor-pointer transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>

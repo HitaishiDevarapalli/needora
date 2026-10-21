@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Star, ArrowRight } from 'lucide-react';
 import { TESTIMONIALS } from '@/data/mockData';
 
@@ -20,13 +21,13 @@ export default function TestimonialsSection() {
             </p>
           </div>
 
-          <button 
-            type="button"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors self-start sm:self-auto group"
+          <Link 
+            href="/about"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors self-start sm:self-auto group cursor-pointer"
           >
             <span>View All Reviews</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </button>
+          </Link>
         </div>
 
         {/* 3 Testimonial Cards matching reference */}
