@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { 
   Utensils, 
   ShoppingBag, 
@@ -58,22 +59,21 @@ export default function CategoriesSection({ onSelectCategory }: CategoriesSectio
             </p>
           </div>
           
-          <button 
-            type="button"
-            onClick={() => onSelectCategory && onSelectCategory('All')}
+          <Link 
+            href="/categories"
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors self-start sm:self-auto group"
           >
             <span>View All Categories</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </button>
+          </Link>
         </div>
 
         {/* 12 Category Tiles in 6x2 grid matching reference screenshot */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5">
           {CATEGORIES.map((category) => (
-            <button
+            <Link
               key={category.id}
-              onClick={() => onSelectCategory && onSelectCategory(category.name)}
+              href={`/categories/${category.slug}`}
               className="flex flex-col items-center justify-center p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-blue-400 hover:shadow-lg hover:shadow-slate-100/80 transition-all duration-200 text-center group cursor-pointer"
             >
               {/* Icon Container in soft pastel matching screenshot */}
@@ -88,7 +88,7 @@ export default function CategoriesSection({ onSelectCategory }: CategoriesSectio
               <span className="text-sm font-semibold text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-1">
                 {category.name}
               </span>
-            </button>
+            </Link>
           ))}
         </div>
 

@@ -1,4 +1,4 @@
-import { Category, ServiceItem, FeaturedItem, Testimonial, Merchant, Order, VerificationRequest, ComplaintTicket } from '@/types';
+import { Category, ServiceItem, FeaturedItem, Testimonial, Merchant, Order, VerificationRequest, ComplaintTicket, BlogReel } from '@/types';
 
 export const CATEGORIES: Category[] = [
   {
@@ -126,68 +126,149 @@ export const CATEGORIES: Category[] = [
 export const POPULAR_SERVICES: ServiceItem[] = [
   {
     id: 'serv-1',
+    slug: 'food-delivery',
     title: 'Food Delivery',
     category: 'Food & Dining',
     tagline: 'Order from your favorite restaurants',
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop&q=80',
     rating: 4.6,
     reviewCount: '2.5M+',
     priceStart: 149,
     duration: '25-35 mins',
     providerName: 'Over 2,400 neighborhood restaurants',
-    badge: 'Popular'
+    badge: 'Popular',
+    description: 'Get hot, authentic regional delicacies, biryanis, pure ghee sweets, and thalis delivered right to your doorstep from hygiene-certified local kitchens.',
+    features: [
+      'Live temperature tracking & sealed tamper-proof packaging',
+      'No minimum order limit with free doorstep delivery above ₹299',
+      'Direct order dispatch to top regional chefs & sweet marts',
+      'Instant refund guarantee on any spill or transit delays'
+    ],
+    packages: [
+      { id: 'p-1', name: 'South Indian Tiffin Combo', price: 149, description: '2 Ghee Masala Dosas, 2 Steamed Idlis, Vada with 3 varieties of chutneys & sambar.', popular: true },
+      { id: 'p-2', name: 'Royal Dum Biryani Feast (Serves 2)', price: 449, description: 'Authentic Hyderabadi Dum Biryani, Mirchi ka Salan, Raita & Double ka Meetha.' },
+      { id: 'p-3', name: 'Assorted Traditional Sweets Box (1kg)', price: 620, description: 'Motichoor Ladoo, Kaju Katli, Besan Ladoo, and Dry Fruit Halwa.' }
+    ],
+    faqs: [
+      { q: 'How fast is food delivered in my area?', a: 'Neighborhood restaurant orders are usually dispatched within 10 minutes and reach your doorstep within 25 to 35 minutes.' },
+      { q: 'Can I pay via cash on delivery or UPI?', a: 'Yes! Needora accepts all UPI apps (GPay, PhonePe, Paytm), credit/debit cards, and cash on delivery.' }
+    ]
   },
   {
     id: 'serv-2',
+    slug: 'grocery-delivery',
     title: 'Grocery Delivery',
     category: 'Shopping',
     tagline: 'Fresh groceries at your doorstep',
-    image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=80',
     rating: 4.5,
     reviewCount: '1.8M+',
     priceStart: 99,
     duration: '15-30 mins',
     providerName: 'Direct from verified farm marts',
-    badge: 'Daily Fresh'
+    badge: 'Daily Fresh',
+    description: 'Handpicked fresh farm vegetables, seasonal fruits, organic cold-pressed oils, premium grains, and everyday pantry essentials delivered in under 30 minutes.',
+    features: [
+      'Zero preservative farm produce delivered fresh every morning',
+      'Direct sourcing from local verified farmers & mandi distributors',
+      '100% replacement guarantee if any vegetable or fruit is bruised',
+      'Weighing scale verification at your doorstep upon request'
+    ],
+    packages: [
+      { id: 'g-1', name: 'Essential Kitchen Veggie Basket (5kg)', price: 299, description: 'Tomatoes, Onions, Potatoes, Coriander, Green Chilies, Ginger, and Spinach.', popular: true },
+      { id: 'g-2', name: 'Organic Fresh Fruits Hamper (3kg)', price: 449, description: 'Pomegranate, Apples, Robusta Bananas, Papaya, and Sweet Oranges.' },
+      { id: 'g-3', name: 'Monthly Staple Ration Pack', price: 1499, description: '10kg Premium Sona Masoori Rice, 5kg Whole Wheat Atta, 2kg Toor Dal, 1L Cold-Pressed Ghee.' }
+    ],
+    faqs: [
+      { q: 'Are the vegetables washed and sanitized?', a: 'Yes, all farm greens and produce undergo ozone purification and hygienic food-grade sorting before packing.' }
+    ]
   },
   {
     id: 'serv-3',
+    slug: 'home-cleaning',
     title: 'Home Cleaning',
     category: 'Home Services',
     tagline: 'Professional & trusted cleaning services',
-    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=800&auto=format&fit=crop&q=80',
     rating: 4.7,
     reviewCount: '1.2M+',
     priceStart: 499,
     duration: '2-4 hours',
     providerName: 'Police-verified cleaning partners',
-    badge: 'Best Seller'
+    badge: 'Best Seller',
+    description: 'Comprehensive residential deep cleaning by background-verified professionals using industrial-grade scrubbers, eco-friendly detergents, and hospital-grade sanitizers.',
+    features: [
+      'Police-verified & Aadhaar-authenticated service technicians',
+      'Hospital-grade non-toxic European cleaning chemicals',
+      'Specialized motorized rotary disc scrubbing machines',
+      '30-day rework guarantee if you are not 100% satisfied'
+    ],
+    packages: [
+      { id: 'hc-1', name: 'Bathroom & Kitchen Intensive Clean', price: 899, description: 'Deep descaling of wall tiles, taps, exhaust fans, sink, and grout line whitening.', popular: true },
+      { id: 'hc-2', name: 'Full 2BHK Home Deep Cleaning', price: 1799, description: 'All rooms, balconies, fans, windows, cupboards exterior, and floor machine scrubbing.' },
+      { id: 'hc-3', name: 'Luxury 3BHK / Villa Deep Sanitization', price: 2599, description: 'Comprehensive top-to-bottom scrub, sofa shampooing, chimney degreasing, and steam sanitization.' }
+    ],
+    faqs: [
+      { q: 'Do I need to provide buckets, mops, or cleaning chemicals?', a: 'No, our team arrives fully equipped with heavy-duty vacuums, scrubbing machines, ladders, and eco-friendly chemicals.' }
+    ]
   },
   {
     id: 'serv-4',
+    slug: 'beauty-salon',
     title: 'Beauty & Salon',
     category: 'Beauty & Wellness',
     tagline: 'Look good, feel great',
-    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&auto=format&fit=crop&q=80',
     rating: 4.6,
     reviewCount: '980K+',
     priceStart: 349,
     duration: '45-90 mins',
     providerName: 'Certified estheticians & stylists',
-    badge: 'Top Rated'
+    badge: 'Top Rated',
+    description: 'Pamper yourself with premium salon & spa services in the comfort and privacy of your home. Delivered exclusively by certified beauticians with single-use sterile kits.',
+    features: [
+      '100% single-use mono-dose packs opened right in front of you',
+      'Branded products including L’Oreal, Cheryl’s, Lotus, and Sara',
+      'Strict post-service clean-up — we leave your space spotless',
+      'Female beauticians assigned for female clients'
+    ],
+    packages: [
+      { id: 'bs-1', name: 'Express Glow Facial & Threading', price: 499, description: 'Herbal fruit cleanse, exfoliating scrub, rejuvenating mask, and eyebrow threading.', popular: true },
+      { id: 'bs-2', name: 'Mani-Pedi Spa & Relaxing Head Massage', price: 799, description: 'Rose petal foot soak, cuticles care, heel scrub, and 20-min warm coconut oil massage.' },
+      { id: 'bs-3', name: 'Bridal Glow & Full Body Polishing', price: 2199, description: 'Gold radiance treatment, full body chocolate wax, and lavender aroma massage.' }
+    ],
+    faqs: [
+      { q: 'Is it hygienic to take salon services at home?', a: 'Yes! Our beauticians wear sanitised aprons, use disposable sheets, and single-use sealed kits.' }
+    ]
   },
   {
     id: 'serv-5',
+    slug: 'tuition-learning',
     title: 'Tuition & Learning',
     category: 'Education',
     tagline: 'Learn from expert tutors',
-    image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800&auto=format&fit=crop&q=80',
     rating: 4.5,
     reviewCount: '760K+',
     priceStart: 600,
     duration: 'Per month',
     providerName: 'CBSE, ICSE & State Board tutors',
-    badge: 'Verified'
+    badge: 'Verified',
+    description: 'Find verified, compassionate home tutors and subject-matter experts for K-12 academics, engineering competitive exams, classical music, and spoken English.',
+    features: [
+      'Background and educational credential-checked tutors',
+      'Free 1-hour demo session before committing to the month',
+      'Weekly progress diagnostic tests and direct parent feedback',
+      'Flexible scheduling: home visits or 1-on-1 live interactive sessions'
+    ],
+    packages: [
+      { id: 'tl-1', name: 'Primary School All-Subjects (Classes 1-5)', price: 1499, description: 'Maths, Science, English, Hindi/Regional language — 3 days/week, 1 hour each.', popular: true },
+      { id: 'tl-2', name: 'Secondary Maths & Science (Classes 6-10)', price: 2499, description: 'Conceptual clarity, board exam preparation, NCERT solving — 4 days/week.' },
+      { id: 'tl-3', name: 'Senior Secondary Physics, Chemistry & Maths', price: 3999, description: 'JEE / NEET foundation, doubt-solving, formula practice — 5 days/week.' }
+    ],
+    faqs: [
+      { q: 'Can I change the tutor if my child is not comfortable?', a: 'Absolutely. We offer a no-questions-asked replacement guarantee within the first 14 days.' }
+    ]
   }
 ];
 
@@ -467,5 +548,93 @@ export const MOCK_COMPLAINTS: ComplaintTicket[] = [
     priority: 'Low',
     date: '17 Oct 2025',
     resolution: 'Apologized to customer, ₹150 credit voucher issued for next booking.'
+  }
+];
+
+export const BLOG_REELS: BlogReel[] = [
+  {
+    id: 'reel-1',
+    title: 'Secret Behind Making Authentic 100% Pure Ghee Motichoor Ladoos! ✨',
+    merchantName: 'Sri Balaji Sweets & Savories',
+    merchantCity: 'Banjara Hills, Hyderabad',
+    category: 'Food & Dining',
+    thumbnail: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=900&auto=format&fit=crop&q=80',
+    offerText: 'FLAT 20% OFF on all Festive Boxes with code DIWALI20',
+    likes: 14200,
+    commentsCount: 384,
+    sharesCount: 1820,
+    tags: ['#HyderabadSweets', '#PureGhee', '#LocalBites', '#NeedoraPicks'],
+    description: 'Watch master confectioner Venkat Rao create hot pearl motichoor straight from copper cauldrons with pure desi ghee and saffron syrup. Order fresh boxes for your family right on Needora!',
+    musicTrack: 'Original Audio • Hyderabad Culinary Heritage',
+    duration: '0:42',
+    verified: true
+  },
+  {
+    id: 'reel-2',
+    title: 'Transforming a Dusty Kitchen Exhaust in Under 15 Minutes! 🧼',
+    merchantName: 'CleanPro Hygiene Solutions',
+    merchantCity: 'Madhapur, Hyderabad',
+    category: 'Home Services',
+    thumbnail: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=900&auto=format&fit=crop&q=80',
+    offerText: 'Book Full 2BHK Deep Cleaning at ₹1,499 Today!',
+    likes: 21800,
+    commentsCount: 512,
+    sharesCount: 2900,
+    tags: ['#DeepCleanChallenge', '#SatisfyingCleaning', '#HomeCare', '#NeedoraVerified'],
+    description: 'See the power of our Italian rotary steam scrubber tackling stubborn grease on chimney mesh. 100% police-verified technicians with hospital grade sanitizers.',
+    musicTrack: 'Trending Beat • Clean Vibes India',
+    duration: '0:35',
+    verified: true
+  },
+  {
+    id: 'reel-3',
+    title: 'From Organic Farms to Your Doorstep in 20 Minutes 🥦🥕',
+    merchantName: 'Green Harvest Organics',
+    merchantCity: 'Jubilee Hills, Hyderabad',
+    category: 'Shopping',
+    thumbnail: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=900&auto=format&fit=crop&q=80',
+    offerText: 'Free Fresh Palak & Coriander with Every Veggie Basket',
+    likes: 9840,
+    commentsCount: 219,
+    sharesCount: 890,
+    tags: ['#OrganicIndia', '#DailyHarvest', '#HealthyLiving', '#FarmFresh'],
+    description: 'Watch how our morning batch of hydroponic greens and farm-fresh bell peppers are inspected, weighed, and sealed into zero-plastic biodegradable totes for lightning delivery.',
+    musicTrack: 'Acoustic Morning • Green Rhythms',
+    duration: '0:28',
+    verified: true
+  },
+  {
+    id: 'reel-4',
+    title: 'Ayurvedic Kesh Kanti Hair Spa: Ancient Herbs for Modern Stress 🌿💆‍♀️',
+    merchantName: 'Dr. Kavita Wellness Studio',
+    merchantCity: 'Indiranagar, Bengaluru',
+    category: 'Beauty & Wellness',
+    thumbnail: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=900&auto=format&fit=crop&q=80',
+    offerText: 'Get 25% OFF on First At-Home Spa Appointment',
+    likes: 18900,
+    commentsCount: 462,
+    sharesCount: 2140,
+    tags: ['#AyurvedaSpa', '#SelfCareSunday', '#NaturalBeauty', '#SalonAtHome'],
+    description: 'Warm sesame oil infused with Brahmi, Bhringraj and Amla gently massaged into the scalp followed by herbal steam infusion. Book your relaxing session today.',
+    musicTrack: 'Flute & Sitar Meditation • Traditional Chants',
+    duration: '0:48',
+    verified: true
+  },
+  {
+    id: 'reel-5',
+    title: 'How 1-on-1 Personalized Tutoring Helped Aarav Score 98% in Maths 📚🎯',
+    merchantName: 'Acuity Scholars Academy',
+    merchantCity: 'Hitec City, Hyderabad',
+    category: 'Education',
+    thumbnail: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=900&auto=format&fit=crop&q=80',
+    offerText: 'Book Free 60-Minute Diagnostic Demo Class',
+    likes: 12400,
+    commentsCount: 330,
+    sharesCount: 1450,
+    tags: ['#CBSETips', '#MathsMadeEasy', '#TutorsNearMe', '#EducationFirst'],
+    description: 'No rote learning, only first-principle visual intuition. Meet our verified math educator Shweta Sen as she explains algebraic factorisation using 3D blocks.',
+    musicTrack: 'Upbeat Focus • LoFi Study Study Study',
+    duration: '0:50',
+    verified: true
   }
 ];

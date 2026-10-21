@@ -74,13 +74,13 @@ export default function BottomCtaSection({ onOpenAuth }: BottomCtaSectionProps) 
         {/* Footer Sub-links & Copyright matching reference */}
         <div className="flex flex-col sm:flex-row items-center justify-between pt-6 text-[11px] text-slate-500 gap-4">
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-            <Link href="#about" className="hover:text-slate-300 transition-colors">About Us</Link>
+            <Link href="/about" className="hover:text-slate-300 transition-colors">About Us</Link>
             <span className="text-slate-700">|</span>
-            <Link href="#help" className="hover:text-slate-300 transition-colors">Help & Support</Link>
+            <Link href="/contact" className="hover:text-slate-300 transition-colors">Help & Support</Link>
             <span className="text-slate-700">|</span>
-            <Link href="#terms" className="hover:text-slate-300 transition-colors">Terms & Conditions</Link>
+            <Link href="/services" className="hover:text-slate-300 transition-colors">All Services</Link>
             <span className="text-slate-700">|</span>
-            <Link href="#privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</Link>
+            <Link href="/blog" className="hover:text-slate-300 transition-colors">Blog Reels</Link>
           </div>
 
           <div>

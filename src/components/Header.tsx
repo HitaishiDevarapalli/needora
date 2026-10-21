@@ -91,29 +91,40 @@ export default function Header({
                     Popular Services
                   </div>
                   <Link 
-                    href="#popular-services" 
+                    href="/services/food-delivery" 
                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-700 rounded-lg transition-colors"
                   >
                     <span>Food & Dining Delivery</span>
                   </Link>
                   <Link 
-                    href="#popular-services" 
+                    href="/services/home-cleaning" 
                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-700 rounded-lg transition-colors"
                   >
                     <span>Home Deep Cleaning</span>
                   </Link>
                   <Link 
-                    href="#popular-services" 
+                    href="/services/beauty-salon" 
                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-700 rounded-lg transition-colors"
                   >
                     <span>Beauty, Salon & Spa</span>
                   </Link>
                   <Link 
-                    href="#popular-services" 
+                    href="/services/tuition-learning" 
                     className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-700 rounded-lg transition-colors"
                   >
                     <span>Academic & Home Tuitions</span>
                   </Link>
+                  <Link 
+                    href="/services/grocery-delivery" 
+                    className="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-700 rounded-lg transition-colors"
+                  >
+                    <span>Grocery Delivery</span>
+                  </Link>
+                  <div className="pt-2 border-t border-slate-100 text-center">
+                    <Link href="/services" className="text-xs font-medium text-brand-600 hover:underline">
+                      View all services →
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
@@ -138,7 +149,7 @@ export default function Header({
                   {CATEGORIES.slice(0, 8).map((cat) => (
                     <Link
                       key={cat.id}
-                      href={`#category-${cat.slug}`}
+                      href={`/categories/${cat.slug}`}
                       className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 transition-colors"
                     >
                       <span 
@@ -154,7 +165,7 @@ export default function Header({
                     </Link>
                   ))}
                   <div className="col-span-2 pt-2 border-t border-slate-100 text-center">
-                    <Link href="#categories" className="text-xs font-medium text-brand-600 hover:underline">
+                    <Link href="/categories" className="text-xs font-medium text-brand-600 hover:underline">
                       View all 50+ categories →
                     </Link>
                   </div>
@@ -162,13 +173,14 @@ export default function Header({
               )}
             </div>
 
-            <Link href="#why-choose" className="text-slate-700 hover:text-brand-600 transition-colors">
+            <Link href="/about" className="text-slate-700 hover:text-brand-600 transition-colors">
               About Us
             </Link>
-            <Link href="#featured" className="text-slate-700 hover:text-brand-600 transition-colors">
-              Blog
+            <Link href="/blog" className="text-slate-700 hover:text-brand-600 transition-colors flex items-center gap-1">
+              <span>Blog</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-600 font-bold text-[10px] border border-rose-200">Reels</span>
             </Link>
-            <Link href="#contact" className="text-slate-700 hover:text-brand-600 transition-colors">
+            <Link href="/contact" className="text-slate-700 hover:text-brand-600 transition-colors">
               Contact
             </Link>
           </nav>
@@ -246,39 +258,40 @@ export default function Header({
               Home
             </Link>
             <Link 
-              href="#popular-services" 
+              href="/services" 
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 px-3 rounded-lg hover:bg-slate-50"
             >
-              Services
+              All Services
             </Link>
             <Link 
-              href="#categories" 
+              href="/categories" 
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 px-3 rounded-lg hover:bg-slate-50"
             >
-              Categories
+              All Categories
             </Link>
             <Link 
-              href="#why-choose" 
+              href="/about" 
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 px-3 rounded-lg hover:bg-slate-50"
             >
               About Us
             </Link>
             <Link 
-              href="#featured" 
+              href="/blog" 
               onClick={() => setMobileMenuOpen(false)}
-              className="py-2 px-3 rounded-lg hover:bg-slate-50"
+              className="py-2 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between"
             >
-              Featured Stories
+              <span>Blog Reels</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-600 font-bold text-[10px] border border-rose-200">Reels</span>
             </Link>
             <Link 
-              href="#testimonials" 
+              href="/contact" 
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 px-3 rounded-lg hover:bg-slate-50"
             >
-              Reviews
+              Contact Support
             </Link>
           </div>
 

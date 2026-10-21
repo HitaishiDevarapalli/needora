@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { ArrowRight, Utensils, Home, ShoppingBag, Flower2, Users, Store, LayoutGrid, Star } from 'lucide-react';
 import { FEATURED_ITEMS, STATS } from '@/data/mockData';
 
@@ -12,6 +13,16 @@ export default function FeaturedSection() {
       case 'ShoppingBag': return <ShoppingBag className="w-3.5 h-3.5 text-purple-600" />;
       case 'Flower2': return <Flower2 className="w-3.5 h-3.5 text-pink-600" />;
       default: return <ShoppingBag className="w-3.5 h-3.5 text-blue-600" />;
+    }
+  };
+
+  const getItemLink = (id: string) => {
+    switch (id) {
+      case 'feat-1': return '/services/food-delivery';
+      case 'feat-2': return '/services/home-cleaning';
+      case 'feat-3': return '/categories/shopping';
+      case 'feat-4': return '/services/beauty-salon';
+      default: return '/services';
     }
   };
 
@@ -40,20 +51,21 @@ export default function FeaturedSection() {
             </p>
           </div>
 
-          <button 
-            type="button"
+          <Link 
+            href="/services"
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors self-start sm:self-auto group"
           >
             <span>View All</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </button>
+          </Link>
         </div>
 
         {/* 4 Featured Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-14">
           {FEATURED_ITEMS.map((item) => (
-            <div
+            <Link
               key={item.id}
+              href={getItemLink(item.id)}
               className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-xl hover:border-blue-300 transition-all duration-200 flex flex-col group cursor-pointer"
             >
               <div className="relative h-40 w-full overflow-hidden bg-slate-100">
@@ -87,7 +99,7 @@ export default function FeaturedSection() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

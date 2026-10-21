@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Star, ArrowRight, ArrowUpRight, Utensils, ShoppingBag, Home, Flower2, GraduationCap } from 'lucide-react';
 import { POPULAR_SERVICES } from '@/data/mockData';
 import { ServiceItem } from '@/types';
@@ -54,21 +55,21 @@ export default function PopularServicesSection({ onSelectService }: PopularServi
             </p>
           </div>
 
-          <button 
-            type="button"
+          <Link 
+            href="/services"
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors self-start sm:self-auto group"
           >
             <span>View All Services</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </button>
+          </Link>
         </div>
 
         {/* 5 Cards Row matching reference screenshot */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
           {POPULAR_SERVICES.map((service) => (
-            <div
+            <Link
               key={service.id}
-              onClick={() => onSelectService && onSelectService(service)}
+              href={`/services/${service.slug}`}
               className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-xl hover:border-blue-300 transition-all duration-200 flex flex-col group cursor-pointer"
             >
               {/* Image banner */}
@@ -111,7 +112,7 @@ export default function PopularServicesSection({ onSelectService }: PopularServi
                 </div>
 
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

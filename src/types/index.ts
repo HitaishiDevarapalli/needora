@@ -13,6 +13,7 @@ export interface Category {
 
 export interface ServiceItem {
   id: string;
+  slug: string;
   title: string;
   category: string;
   tagline: string;
@@ -23,6 +24,19 @@ export interface ServiceItem {
   duration?: string;
   providerName: string;
   badge?: string;
+  description?: string;
+  features?: string[];
+  packages?: {
+    id: string;
+    name: string;
+    price: number;
+    description: string;
+    popular?: boolean;
+  }[];
+  faqs?: {
+    q: string;
+    a: string;
+  }[];
 }
 
 export interface FeaturedItem {
@@ -137,4 +151,22 @@ export interface ComplaintTicket {
   priority: 'Low' | 'Medium' | 'High';
   date: string;
   resolution?: string;
+}
+
+export interface BlogReel {
+  id: string;
+  title: string;
+  merchantName: string;
+  merchantCity: string;
+  category: string;
+  thumbnail: string;
+  offerText: string;
+  likes: number;
+  commentsCount: number;
+  sharesCount: number;
+  tags: string[];
+  description: string;
+  musicTrack: string;
+  duration: string;
+  verified: boolean;
 }
