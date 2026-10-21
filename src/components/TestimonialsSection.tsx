@@ -38,11 +38,9 @@ export default function TestimonialsSection() {
               className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-xs hover:shadow-lg hover:border-slate-300 transition-all duration-200 flex flex-col justify-between"
             >
               <div className="flex items-center gap-3.5 mb-4">
-                <img
-                  src={t.avatar}
-                  alt={t.name}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-slate-100"
-                />
+                <div className="w-11 h-11 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-sm border-2 border-white shadow-xs">
+                  {t.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-900">{t.name}</h3>
                   <div className="flex items-center gap-1 mt-0.5">

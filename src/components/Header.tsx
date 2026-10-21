@@ -131,12 +131,19 @@ export default function Header({
             </button>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-700">
+            <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-slate-700">
               <Link 
                 href="/" 
                 className="text-brand-600 font-semibold relative py-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-brand-600"
               >
                 Home
+              </Link>
+
+              <Link 
+                href="/explore" 
+                className="text-slate-700 hover:text-brand-600 transition-colors"
+              >
+                Explore
               </Link>
 
               {/* Services Dropdown */}
@@ -240,6 +247,12 @@ export default function Header({
                 )}
               </div>
 
+              {/* Videos / Reels */}
+              <Link href="/videos" className="text-slate-700 hover:text-brand-600 transition-colors flex items-center gap-1">
+                <span>Reels</span>
+                <span className="px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-600 font-bold text-[10px] border border-rose-200">Video</span>
+              </Link>
+
               {/* Customer Enquiries Tracking (Master Spec Section 10) */}
               <Link 
                 href="/my-enquiries" 
@@ -250,15 +263,14 @@ export default function Header({
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               </Link>
 
-              <Link href="/about" className="text-slate-700 hover:text-brand-600 transition-colors">
-                About Us
+              {/* Dora AI */}
+              <Link 
+                href="/dora" 
+                className="text-indigo-600 hover:text-indigo-700 transition-colors flex items-center gap-1 font-semibold"
+              >
+                <span>Dora AI</span>
               </Link>
-              
-              <Link href="/blog" className="text-slate-700 hover:text-brand-600 transition-colors flex items-center gap-1">
-                <span>Blog</span>
-                <span className="px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-600 font-bold text-[10px] border border-rose-200">Reels</span>
-              </Link>
-              
+
               <Link href="/contact" className="text-slate-700 hover:text-brand-600 transition-colors">
                 Contact
               </Link>
@@ -384,6 +396,13 @@ export default function Header({
                 Home
               </Link>
               <Link 
+                href="/explore" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-lg hover:bg-slate-50 font-medium"
+              >
+                Explore Community
+              </Link>
+              <Link 
                 href="/services" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-2 px-3 rounded-lg hover:bg-slate-50"
@@ -396,6 +415,29 @@ export default function Header({
                 className="py-2 px-3 rounded-lg hover:bg-slate-50"
               >
                 All Categories & Subcategories
+              </Link>
+              <Link 
+                href="/videos" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between"
+              >
+                <span>Reels & Videos</span>
+                <span className="px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-600 font-bold text-[10px] border border-rose-200">Reels</span>
+              </Link>
+              <Link 
+                href="/dora" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-lg hover:bg-indigo-50 text-indigo-700 font-bold flex items-center justify-between"
+              >
+                <span>Dora AI Assistant</span>
+                <span className="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full font-bold">AI</span>
+              </Link>
+              <Link 
+                href="/saved" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-lg hover:bg-slate-50 font-medium"
+              >
+                Saved Bookmarks
               </Link>
               <Link 
                 href="/my-enquiries" 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   ShieldCheck, 
@@ -37,61 +37,71 @@ import {
   BLOG_REELS 
 } from '@/data/mockData';
 import { VerificationRequest } from '@/types';
+import { 
+  getStoredEnquiries, 
+  getStoredBusinesses, 
+  getStoredVideos, 
+  updateEnquiryStatus as persistAdminEnquiryStatus,
+  updateBusiness 
+} from '@/lib/storage';
 
 export default function AdminPortal() {
   const [activeTab, setActiveTab] = useState<'enquiries' | 'verifications' | 'listings' | 'categories' | 'reels' | 'complaints'>('enquiries');
   
   // Real-time client enquiries state matching main website 100% free lead dispatch model
-  const [enquiries, setEnquiries] = useState([
-    {
-      id: 'ENQ-901',
-      clientName: 'Kavita Sundaram',
-      phone: '+91 98480 99881',
-      city: 'Mumbai',
-      location: 'Andheri West (0.8 km)',
-      merchantName: 'Sri Balaji Sweets & Traditional Savories',
-      issue: 'Need urgent assorted festive sweets gift packaging & custom box design for 50 people.',
-      time: '6 mins ago',
-      dispatchAlert: 'SMS & WhatsApp Alert Dispatched to Merchant (+91 98765 43210)',
-      status: 'Dispatched'
-    },
-    {
-      id: 'ENQ-902',
-      clientName: 'Devarapalli Hitaishi',
-      phone: '+91 97001 22334',
-      city: 'Mumbai',
-      location: 'Tank Bazar (1.2 km)',
-      merchantName: 'Royal Furniture & Modular Studio',
-      issue: 'Inquiring about 3D modular kitchen design estimate and site measurement visit.',
-      time: '24 mins ago',
-      dispatchAlert: 'SMS & WhatsApp Alert Dispatched to Merchant (+91 98201 55667)',
-      status: 'Contacted'
-    },
-    {
-      id: 'ENQ-903',
-      clientName: 'Meera Deshpande',
-      phone: '+91 91234 88776',
-      city: 'Hyderabad',
-      location: 'Banjara Hills',
-      merchantName: 'UrbanSpark Deep Cleaning Solutions',
-      issue: 'Full 3BHK deep cleaning and balcony sanitization before family arrival this Saturday.',
-      time: '45 mins ago',
-      dispatchAlert: 'SMS & WhatsApp Alert Dispatched to Merchant (+91 98481 11223)',
-      status: 'Resolved'
-    },
-    {
-      id: 'ENQ-904',
-      clientName: 'Arun Kumar Verma',
-      phone: '+91 98200 11456',
-      city: 'New Delhi',
-      location: 'Connaught Place',
-      merchantName: 'QuickFix Electrical & Appliance Care',
-      issue: 'Master bedroom AC making rattling noise and cooling weak. Require emergency diagnostic visit.',
-      time: '1 hour ago',
-      dispatchAlert: 'SMS & WhatsApp Alert Dispatched to Merchant (+91 98110 99887)',
-      status: 'Dispatched'
+  const [enquiries, setEnquiries] = useState<any[]>([]);
+
+  const loadAdminData = () => {
+    const stored = getStoredEnquiries();
+    if (stored && stored.length > 0) {
+      setEnquiries(stored.map(s => ({
+        id: s.enquiryRef || s.id,
+        rawId: s.id,
+        clientName: s.customerName,
+        phone: s.customerPhone,
+        city: s.location || 'Local',
+        location: s.location || 'Nearby',
+        merchantName: s.businessName,
+        issue: s.requirement,
+        time: new Date(s.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        dispatchAlert: `SMS & WhatsApp Alert Dispatched to Merchant (${s.businessPhone || '+91 98765 43210'})`,
+        status: s.status,
+      })));
+    } else {
+      setEnquiries([
+        {
+          id: 'ENQ-901',
+          clientName: 'Kavita Sundaram',
+          phone: '+91 98480 99881',
+          city: 'Mumbai',
+          location: 'Andheri West (0.8 km)',
+          merchantName: 'Sri Balaji Sweets & Traditional Savories',
+          issue: 'Need urgent assorted festive sweets gift packaging & custom box design for 50 people.',
+          time: '6 mins ago',
+          dispatchAlert: 'SMS & WhatsApp Alert Dispatched to Merchant (+91 98765 43210)',
+          status: 'Dispatched'
+        },
+        {
+          id: 'ENQ-902',
+          clientName: 'Devarapalli Hitaishi',
+          phone: '+91 97001 22334',
+          city: 'Mumbai',
+          location: 'Tank Bazar (1.2 km)',
+          merchantName: 'Royal Furniture & Modular Studio',
+          issue: 'Inquiring about 3D modular kitchen design estimate and site measurement visit.',
+          time: '24 mins ago',
+          dispatchAlert: 'SMS & WhatsApp Alert Dispatched to Merchant (+91 98201 55667)',
+          status: 'Contacted'
+        }
+      ]);
     }
-  ]);
+  };
+
+  useEffect(() => {
+    loadAdminData();
+    window.addEventListener('needora_storage_update', loadAdminData);
+    return () => window.removeEventListener('needora_storage_update', loadAdminData);
+  }, []);
 
   // Verification requests state
   const [verifications, setVerifications] = useState<VerificationRequest[]>(MOCK_VERIFICATIONS);
@@ -113,6 +123,11 @@ export default function AdminPortal() {
     setEnquiries((prev) =>
       prev.map((e) => (e.id === id ? { ...e, status } : e))
     );
+    try {
+      persistAdminEnquiryStatus(id, status as any);
+    } catch (e) {
+      // fallback
+    }
   };
 
   return (

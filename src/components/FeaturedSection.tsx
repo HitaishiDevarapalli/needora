@@ -103,30 +103,70 @@ export default function FeaturedSection() {
           ))}
         </div>
 
-        {/* Stats Row with Handwritten annotation matching reference */}
+        {/* Real Platform Guarantees Row */}
         <div className="relative bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 items-center">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
-                  {getStatIcon(stat.icon)}
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
+                <Store className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  100% Free
                 </div>
-                <div>
-                  <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                    {stat.value}
-                  </div>
-                  <div className="text-xs sm:text-sm text-slate-500 font-medium">
-                    {stat.label}
-                  </div>
+                <div className="text-xs sm:text-sm text-slate-500 font-medium">
+                  Direct Enquiries
                 </div>
               </div>
-            ))}
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
+                <Users className="w-5 h-5 text-emerald-600" />
+              </div>
+              <div>
+                <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  Zero Fees
+                </div>
+                <div className="text-xs sm:text-sm text-slate-500 font-medium">
+                  No Middleman Cut
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center shrink-0">
+                <LayoutGrid className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  12+ Sectors
+                </div>
+                <div className="text-xs sm:text-sm text-slate-500 font-medium">
+                  Local Categories
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center shrink-0">
+                <Star className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  Direct SMS
+                </div>
+                <div className="text-xs sm:text-sm text-slate-500 font-medium">
+                  WhatsApp Alerts
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Handwritten Annotation on Right */}
+          {/* Annotation */}
           <div className="hidden lg:flex absolute -top-5 right-6 items-center gap-2 pointer-events-none">
             <span className="text-xs font-bold text-blue-700 transform -rotate-3">
-              Join thousands <br /> who trust Needora
+              Hyperlocal & Transparent <br /> Built for Local Commerce
             </span>
             <svg className="w-8 h-8 text-blue-500" viewBox="0 0 30 30" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M5 25 C 10 15, 20 10, 25 5" />

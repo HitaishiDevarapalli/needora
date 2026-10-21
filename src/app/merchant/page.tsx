@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Store, 
@@ -26,6 +26,7 @@ import {
   Check
 } from 'lucide-react';
 import { MOCK_MERCHANTS } from '@/data/mockData';
+import { getStoredEnquiries, updateEnquiryStatus as persistEnquiryStatus, StoredEnquiry } from '@/lib/storage';
 
 export default function MerchantDashboard() {
   const [activeTab, setActiveTab] = useState<'enquiries' | 'catalogue' | 'storefront' | 'offers' | 'analytics'>('enquiries');
@@ -34,41 +35,57 @@ export default function MerchantDashboard() {
   const merchant = MOCK_MERCHANTS[0]; // Sri Balaji Sweets & Traditional Savories
 
   // Live Customer Enquiries & Lead Alerts state (Zero Transactions, 100% Free Lead Model)
-  const [enquiries, setEnquiries] = useState([
-    {
-      id: 'ENQ-901',
-      clientName: 'Kavita Sundaram',
-      phone: '+91 98480 99881',
-      location: 'Andheri West, Mumbai (0.8 km away)',
-      issue: 'Need urgent assorted festive sweets gift packaging & custom box design for 50 people for a family function tomorrow.',
-      preferredSlot: 'Immediate Callback (Within 15 mins)',
-      time: '6 mins ago',
-      alertStatus: 'SMS & WhatsApp Alert Dispatched to Merchant (+91 98765 43210)',
-      status: 'New Lead'
-    },
-    {
-      id: 'ENQ-902',
-      clientName: 'Devarapalli Hitaishi',
-      phone: '+91 97001 22334',
-      location: 'Tank Bazar, Mumbai (1.2 km away)',
-      issue: 'Inquiring about bulk order for traditional pure ghee sweets and savoury snacks with customized sweet boxes.',
-      preferredSlot: 'Today Afternoon (12 PM - 3 PM)',
-      time: '24 mins ago',
-      alertStatus: 'SMS & WhatsApp Alert Dispatched to Merchant (+91 98765 43210)',
-      status: 'In Progress'
-    },
-    {
-      id: 'ENQ-903',
-      clientName: 'Meera Deshpande',
-      phone: '+91 91234 88776',
-      location: 'Banjara Hills, Hyderabad',
-      issue: 'Need custom sugar-free dry fruit sweets combo for diabetic elderly guests. Require immediate ingredient confirmation.',
-      preferredSlot: 'Today Evening (5 PM - 8 PM)',
-      time: '45 mins ago',
-      alertStatus: 'SMS & WhatsApp Alert Dispatched to Merchant (+91 98765 43210)',
-      status: 'Contacted'
+  const [enquiries, setEnquiries] = useState<any[]>([]);
+
+  const loadEnquiries = () => {
+    const stored = getStoredEnquiries();
+    if (stored && stored.length > 0) {
+      setEnquiries(stored.map(s => ({
+        id: s.enquiryRef || s.id,
+        rawId: s.id,
+        clientName: s.customerName,
+        phone: s.customerPhone,
+        location: s.location || 'Local Neighborhood (0.5 km)',
+        issue: s.requirement,
+        preferredSlot: s.preferredTime,
+        time: new Date(s.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        alertStatus: `SMS & WhatsApp Alert Dispatched to Merchant (${s.businessPhone || '+91 98765 43210'})`,
+        status: s.status === 'Submitted' ? 'New Lead' : s.status,
+      })));
+    } else {
+      // Clean default initial state if empty
+      setEnquiries([
+        {
+          id: 'ENQ-901',
+          clientName: 'Kavita Sundaram',
+          phone: '+91 98480 99881',
+          location: 'Andheri West, Mumbai (0.8 km away)',
+          issue: 'Need urgent assorted festive sweets gift packaging & custom box design for 50 people for a family function tomorrow.',
+          preferredSlot: 'Immediate Callback (Within 15 mins)',
+          time: '6 mins ago',
+          alertStatus: 'SMS & WhatsApp Alert Dispatched to Merchant (+91 98765 43210)',
+          status: 'New Lead'
+        },
+        {
+          id: 'ENQ-902',
+          clientName: 'Devarapalli Hitaishi',
+          phone: '+91 97001 22334',
+          location: 'Tank Bazar, Mumbai (1.2 km away)',
+          issue: 'Inquiring about bulk order for traditional pure ghee sweets and savoury snacks with customized sweet boxes.',
+          preferredSlot: 'Today Afternoon (12 PM - 3 PM)',
+          time: '24 mins ago',
+          alertStatus: 'SMS & WhatsApp Alert Dispatched to Merchant (+91 98765 43210)',
+          status: 'In Progress'
+        }
+      ]);
     }
-  ]);
+  };
+
+  useEffect(() => {
+    loadEnquiries();
+    window.addEventListener('needora_storage_update', loadEnquiries);
+    return () => window.removeEventListener('needora_storage_update', loadEnquiries);
+  }, []);
 
   // Catalogue / Services listed for customer enquiry
   const [catalogue, setCatalogue] = useState([
@@ -83,6 +100,11 @@ export default function MerchantDashboard() {
     setEnquiries((prev) =>
       prev.map((enq) => (enq.id === enquiryId ? { ...enq, status: nextStatus } : enq))
     );
+    try {
+      persistEnquiryStatus(enquiryId, nextStatus as any);
+    } catch (e) {
+      // fallback
+    }
   };
 
   const simulateNewEnquiry = () => {

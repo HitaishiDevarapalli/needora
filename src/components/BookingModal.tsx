@@ -15,21 +15,39 @@ import {
   BellRing
 } from 'lucide-react';
 import { ServiceItem } from '@/types';
+import { saveEnquiry } from '@/lib/storage';
 
-interface BookingModalProps {
-  service: ServiceItem | null;
+export interface BookingModalProps {
+  service?: ServiceItem | null;
+  serviceName?: string;
+  category?: string;
+  providerName?: string;
+  isOpen?: boolean;
   onClose: () => void;
-  onOrderPlaced: (enquiryData: any) => void;
+  onOrderPlaced?: (enquiryData: any) => void;
 }
 
-export default function BookingModal({ service, onClose, onOrderPlaced }: BookingModalProps) {
-  if (!service) return null;
+export default function BookingModal({ 
+  service, 
+  serviceName, 
+  category, 
+  providerName,
+  isOpen = true, 
+  onClose, 
+  onOrderPlaced 
+}: BookingModalProps) {
+  if (!isOpen && !service && !serviceName) return null;
+  if (!service && !serviceName) return null;
+
+  const title = service?.title || serviceName || 'Local Service';
+  const provider = service?.providerName || providerName || 'Verified Merchant';
+  const cat = service?.category || category || 'General';
 
   const [fullName, setFullName] = useState('Priya Sharma');
   const [phone, setPhone] = useState('+91 98765 43210');
   const [location, setLocation] = useState('Indiranagar, Bengaluru');
   const [preferredTime, setPreferredTime] = useState('Immediate Callback (Within 15 mins)');
-  const [clientIssue, setClientIssue] = useState(`Need urgent assistance and quote for ${service.title}. Looking for verified service with warranty.`);
+  const [clientIssue, setClientIssue] = useState(`Need urgent assistance and quote for ${title}. Looking for verified service with warranty.`);
   const [isSuccess, setIsSuccess] = useState(false);
   const [enquiryRef, setEnquiryRef] = useState('');
 
@@ -46,20 +64,37 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
 
   const handleConfirm = (e: React.FormEvent) => {
     e.preventDefault();
-    const newEnquiryRef = 'ENQ-' + Math.floor(100000 + Math.random() * 900000);
-    setEnquiryRef(newEnquiryRef);
+    
+    // Save to real persistent storage engine
+    const saved = saveEnquiry({
+      businessId: 'BIZ-' + Math.floor(100 + Math.random() * 900),
+      businessName: provider,
+      category: cat,
+      customerName: fullName,
+      customerPhone: phone,
+      location,
+      requirement: clientIssue,
+      preferredTime,
+      businessPhone: '+91 98765 43210',
+      businessWhatsapp: '+919876543210',
+      businessAddress: `${location}`,
+    });
+
+    setEnquiryRef(saved.enquiryRef);
     setIsSuccess(true);
     
-    onOrderPlaced({
-      orderNumber: newEnquiryRef,
-      serviceTitle: service.title,
-      customerName: fullName,
-      phone,
-      location,
-      issue: clientIssue,
-      preferredTime,
-      merchantName: service.providerName
-    });
+    if (onOrderPlaced) {
+      onOrderPlaced({
+        orderNumber: saved.enquiryRef,
+        serviceTitle: title,
+        customerName: fullName,
+        phone,
+        location,
+        issue: clientIssue,
+        preferredTime,
+        merchantName: provider
+      });
+    }
   };
 
   return (
@@ -84,10 +119,10 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900">
-                {isSuccess ? 'Enquiry Sent to Merchant' : `Send Free Enquiry — ${service.title}`}
+                {isSuccess ? 'Enquiry Sent to Merchant' : `Send Free Enquiry — ${title}`}
               </h3>
               <p className="text-[11px] text-slate-500">
-                Direct lead message dispatched to {service.providerName}
+                Direct lead message dispatched to {provider}
               </p>
             </div>
           </div>
@@ -124,7 +159,7 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
                 <span>Instant Merchant Alert Dispatched</span>
               </div>
               <p className="text-[11px] text-blue-800 leading-relaxed">
-                An automated SMS and WhatsApp notification was just transmitted to <strong className="font-semibold">{service.providerName}</strong>:
+                An automated SMS and WhatsApp notification was just transmitted to <strong className="font-semibold">{provider}</strong>:
               </p>
               <div className="bg-white/90 p-3 rounded-xl font-mono text-[11px] text-slate-700 border border-blue-100">
                 &ldquo;New Client Enquiry from <span className="font-bold">{fullName}</span> ({phone}). Issue: <span className="font-bold">{clientIssue}</span>. Callback requested: {preferredTime}.&rdquo;
@@ -150,15 +185,21 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
           <form onSubmit={handleConfirm} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
             {/* Service Summary Card with NO PRICES */}
             <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 border border-slate-200">
-              <img
-                src={service.image}
-                alt={service.title}
-                className="w-14 h-14 rounded-xl object-cover shrink-0"
-              />
+              {service?.image ? (
+                <img
+                  src={service.image}
+                  alt={title}
+                  className="w-14 h-14 rounded-xl object-cover shrink-0"
+                />
+              ) : (
+                <div className="w-14 h-14 rounded-xl bg-blue-100 text-blue-600 font-bold flex items-center justify-center shrink-0">
+                  {title.slice(0, 2)}
+                </div>
+              )}
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">{service.category}</div>
-                <div className="text-sm font-bold text-slate-900 truncate">{service.title}</div>
-                <div className="text-xs text-slate-500">{service.providerName}</div>
+                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">{cat}</div>
+                <div className="text-sm font-bold text-slate-900 truncate">{title}</div>
+                <div className="text-xs text-slate-500">{provider}</div>
               </div>
               <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full shrink-0">
                 100% Free
@@ -246,7 +287,7 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
               className="w-full py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2 cursor-pointer"
             >
               <Send className="w-4 h-4" />
-              <span>Send Enquiry to {service.providerName}</span>
+              <span>Send Enquiry to {provider}</span>
             </button>
           </form>
         )}
