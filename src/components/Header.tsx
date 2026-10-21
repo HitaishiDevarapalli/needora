@@ -16,7 +16,9 @@ import {
   Compass,
   Check,
   Megaphone,
-  Tag
+  Tag,
+  MessageSquare,
+  Globe
 } from 'lucide-react';
 import { CATEGORIES } from '@/data/mockData';
 
@@ -39,6 +41,8 @@ export default function Header({
   const [selectedCity, setSelectedCity] = useState('Tank Bazar, Mumbai');
   const [locationModalOpen, setLocationModalOpen] = useState(false);
   const [detectingGps, setDetectingGps] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<'English' | 'తెలుగు' | 'हिंदी'>('English');
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
 
   // HTML5 Browser Geolocation Detection
   const handleDetectLocation = () => {
@@ -236,6 +240,16 @@ export default function Header({
                 )}
               </div>
 
+              {/* Customer Enquiries Tracking (Master Spec Section 10) */}
+              <Link 
+                href="/my-enquiries" 
+                className="text-slate-700 hover:text-blue-600 transition-colors flex items-center gap-1.5 font-semibold bg-blue-50/60 px-3 py-1.5 rounded-xl border border-blue-100"
+              >
+                <MessageSquare className="w-3.5 h-3.5 text-blue-600" />
+                <span>My Enquiries</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              </Link>
+
               <Link href="/about" className="text-slate-700 hover:text-brand-600 transition-colors">
                 About Us
               </Link>
@@ -263,6 +277,41 @@ export default function Header({
                 </span>
                 <span className="text-slate-800">Free Listing</span>
               </Link>
+
+              {/* Vernacular Language Selector (Section 15 of Master Prompt) */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors shadow-xs"
+                  title="Switch Language: English / Telugu / Hindi"
+                >
+                  <Globe className="w-3.5 h-3.5 text-blue-600" />
+                  <span>{selectedLanguage}</span>
+                  <ChevronDown className="w-3 h-3 text-slate-400" />
+                </button>
+
+                {langDropdownOpen && (
+                  <div className="absolute right-0 top-full mt-1.5 w-32 bg-white rounded-xl shadow-xl border border-slate-100 py-1.5 z-50">
+                    {(['English', 'తెలుగు', 'हिंदी'] as const).map((lang) => (
+                      <button
+                        key={lang}
+                        type="button"
+                        onClick={() => {
+                          setSelectedLanguage(lang);
+                          setLangDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-3 py-1.5 text-xs font-medium flex items-center justify-between hover:bg-slate-50 ${
+                          selectedLanguage === lang ? 'text-blue-600 font-bold bg-blue-50/50' : 'text-slate-700'
+                        }`}
+                      >
+                        <span>{lang}</span>
+                        {selectedLanguage === lang && <Check className="w-3 h-3 text-blue-600" />}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               {/* Search Trigger */}
               <button
@@ -347,6 +396,17 @@ export default function Header({
                 className="py-2 px-3 rounded-lg hover:bg-slate-50"
               >
                 All Categories & Subcategories
+              </Link>
+              <Link 
+                href="/my-enquiries" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-lg hover:bg-blue-50 text-blue-700 font-bold flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4 text-blue-600" />
+                  <span>My Enquiries</span>
+                </div>
+                <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">ACTIVE LEADS</span>
               </Link>
               <Link 
                 href="/listing" 

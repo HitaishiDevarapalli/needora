@@ -187,6 +187,25 @@ export interface ComplaintTicket {
   resolution?: string;
 }
 
+export interface CustomerEnquiry {
+  id: string;
+  enquiryRef: string;
+  businessName: string;
+  category: string;
+  customerName: string;
+  customerPhone: string;
+  location: string;
+  requirement: string;
+  preferredTime: string;
+  date: string;
+  status: 'Submitted' | 'Sent to Business' | 'Delivered' | 'Viewed' | 'Business Responded' | 'Quote Provided' | 'Customer Contacted' | 'Closed';
+  merchantResponse?: string;
+  quotationDetails?: string;
+  businessPhone: string;
+  businessWhatsapp: string;
+  businessAddress: string;
+}
+
 export interface BlogReel {
   id: string;
   title: string;

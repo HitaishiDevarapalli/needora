@@ -20,7 +20,13 @@ import {
   ArrowLeft,
   Sparkles,
   PhoneCall,
-  Send
+  Send,
+  Heart,
+  Share2,
+  Navigation,
+  MessageSquare,
+  Phone,
+  Check
 } from 'lucide-react';
 
 interface ServicePageProps {
@@ -39,14 +45,30 @@ export default function SingleServicePage({ params }: ServicePageProps) {
   const [selectedPackage, setSelectedPackage] = useState(service.packages?.[0] || null);
   const [bookingOpen, setBookingOpen] = useState(false);
   const [orderToast, setOrderToast] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [sharedToast, setSharedToast] = useState(false);
+
+  const handleShare = () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      setSharedToast(true);
+      setTimeout(() => setSharedToast(false), 2500);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <Header />
 
+      {sharedToast && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 animate-in fade-in">
+          <span>✓ Profile link copied to clipboard!</span>
+        </div>
+      )}
+
       {orderToast && (
         <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 animate-bounce">
-          <span>✓ Booking confirmed for {service.title}! Reference: {orderToast}</span>
+          <span>✓ Enquiry dispatched to {service.providerName}! Ref: {orderToast}</span>
           <button onClick={() => setOrderToast(null)} className="ml-2 font-bold text-emerald-200">✕</button>
         </div>
       )}
@@ -134,7 +156,7 @@ export default function SingleServicePage({ params }: ServicePageProps) {
 
             </div>
 
-            {/* Right Column: Hero Visual & Quick Book Card */}
+            {/* Right Column: Hero Visual & Direct Contact Actions (Master Spec Section 7 & 14) */}
             <div className="lg:col-span-5 flex flex-col space-y-4">
               <div className="relative h-64 sm:h-72 rounded-2xl overflow-hidden shadow-lg border border-slate-100">
                 <img
@@ -142,28 +164,93 @@ export default function SingleServicePage({ params }: ServicePageProps) {
                   alt={service.title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                
+                {/* Save & Share floating pill buttons */}
+                <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+                  <button
+                    type="button"
+                    onClick={() => setIsSaved(!isSaved)}
+                    className={`p-2 rounded-full backdrop-blur-md transition-all ${
+                      isSaved ? 'bg-rose-500 text-white' : 'bg-black/40 hover:bg-black/60 text-white'
+                    }`}
+                    title={isSaved ? 'Saved in My Favourites' : 'Save Business'}
+                  >
+                    <Heart className={`w-4 h-4 ${isSaved ? 'fill-white' : ''}`} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleShare}
+                    className="p-2 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur-md transition-all"
+                    title="Share Business Profile"
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </button>
+                </div>
+
                 <div className="absolute bottom-4 left-4 text-white">
-                  <span className="text-xs font-medium text-slate-200 block">Managed by</span>
-                  <span className="text-sm font-bold">{service.providerName}</span>
+                  <span className="text-[11px] font-medium text-slate-300 block">Verified Business Provider</span>
+                  <span className="text-base font-bold">{service.providerName}</span>
+                  <div className="flex items-center gap-2 text-[10px] text-emerald-300 font-semibold mt-0.5">
+                    <span>Open Now • 9:00 AM - 9:30 PM</span>
+                    <span>•</span>
+                    <span>Est. 2014</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Direct Free Enquiry Action Pill */}
-              <div className="bg-slate-900 text-white rounded-2xl p-4 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Client Connection</span>
-                  <span className="text-sm font-bold text-white">No Payment • Free Enquiry</span>
+              {/* Direct Actions Matrix */}
+              <div className="bg-slate-900 text-white rounded-2xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Direct Merchant Contact</span>
+                    <span className="text-xs font-bold text-emerald-400">100% Free • No Payment Required</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setBookingOpen(true)}
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-xs rounded-xl transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>Send Enquiry / Quote</span>
+                  </button>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setBookingOpen(true)}
-                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-md flex items-center gap-2"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>Send Enquiry to Merchant</span>
-                </button>
+                {/* 3 Quick Action Buttons: Call, WhatsApp, Directions */}
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-800 text-xs font-bold">
+                  <a
+                    href="tel:+919876543210"
+                    className="py-2 px-2 rounded-xl bg-slate-800 hover:bg-emerald-700 text-white flex items-center justify-center gap-1.5 transition-colors text-center"
+                    title="Launch device dialler"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Call Now</span>
+                  </a>
+
+                  <a
+                    href={`https://wa.me/919876543210?text=${encodeURIComponent(`Hello ${service.providerName}, I found your business on Needora and would like to enquire about ${service.title}.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-2 px-2 rounded-xl bg-slate-800 hover:bg-emerald-600 text-white flex items-center justify-center gap-1.5 transition-colors text-center"
+                    title="Chat on WhatsApp"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>WhatsApp</span>
+                  </a>
+
+                  <a
+                    href={`https://maps.google.com/?q=${encodeURIComponent(service.providerName + ' Bangalore Mumbai')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-2 px-2 rounded-xl bg-slate-800 hover:bg-blue-600 text-white flex items-center justify-center gap-1.5 transition-colors text-center"
+                    title="Get directions in Google Maps"
+                  >
+                    <Navigation className="w-3.5 h-3.5 text-blue-400" />
+                    <span>Directions</span>
+                  </a>
+                </div>
               </div>
             </div>
 

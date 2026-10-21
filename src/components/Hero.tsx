@@ -20,11 +20,13 @@ export default function Hero({ onSearchSubmit, onOpenVoiceSearch }: HeroProps) {
   };
 
   const quickPills = [
-    'Home Services',
-    'Food Delivery',
-    'Beauty & Wellness',
-    'Education',
-    'Shopping'
+    'Best dentist near me',
+    'AC repair in Vijayawada',
+    'Rice wholesalers in Guntur',
+    'Wedding photographers nearby',
+    'Mobile shops open now',
+    'Interior designers',
+    'Restaurants with special offers'
   ];
 
   return (
@@ -72,7 +74,7 @@ export default function Hero({ onSearchSubmit, onOpenVoiceSearch }: HeroProps) {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search for Spa, Home Decor, Doctors, Services..."
+                    placeholder="Search for shops, services, products, and businesses near you"
                     className="w-full py-2.5 px-2 text-xs sm:text-sm text-slate-800 placeholder-slate-400 bg-transparent focus:outline-none"
                   />
 

@@ -1,4 +1,4 @@
-import { Category, ServiceItem, FeaturedItem, Testimonial, Merchant, Order, VerificationRequest, ComplaintTicket, BlogReel, MerchantListing } from '@/types';
+import { Category, ServiceItem, FeaturedItem, Testimonial, Merchant, Order, VerificationRequest, ComplaintTicket, BlogReel, MerchantListing, CustomerEnquiry } from '@/types';
 
 export const CATEGORIES: Category[] = [
   {
@@ -662,7 +662,7 @@ export const BLOG_REELS: BlogReel[] = [
     merchantCity: 'Madhapur, Hyderabad',
     category: 'Home Services',
     thumbnail: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=900&auto=format&fit=crop&q=80',
-    offerText: 'Book Full 2BHK Deep Cleaning at ₹1,499 Today!',
+    offerText: 'Book Full 2BHK Deep Cleaning Free Quote Today!',
     likes: 21800,
     commentsCount: 512,
     sharesCount: 2900,
@@ -671,5 +671,77 @@ export const BLOG_REELS: BlogReel[] = [
     musicTrack: 'Trending Beat • Clean Vibes India',
     duration: '0:35',
     verified: true
+  }
+];
+
+export const MOCK_CUSTOMER_ENQUIRIES: CustomerEnquiry[] = [
+  {
+    id: 'enq-1',
+    enquiryRef: 'ENQ-992101',
+    businessName: 'Sri Balaji Sweets & Traditional Savories',
+    category: 'Food & Dining',
+    customerName: 'Priya Sharma',
+    customerPhone: '+91 98765 43210',
+    location: 'Indiranagar, Bengaluru',
+    requirement: 'Need customized corporate Diwali festive gift packaging with pure ghee sweets for 40 boxes. Require delivery by Friday.',
+    preferredTime: 'Today Afternoon (12 PM - 3 PM)',
+    date: '21 Oct 2026, 11:30 AM',
+    status: 'Quote Provided',
+    merchantResponse: 'Hello Priya, we can prepare 40 custom branded tins with assorted Kaju Katli & Dry Fruit Halwa. Prepared freshly on Friday morning and delivered via courier.',
+    quotationDetails: 'Custom Box Option A (500g Assorted): Fresh batch preparation with custom logo card included. Free doorstep transit.',
+    businessPhone: '+91 98765 43210',
+    businessWhatsapp: '919876543210',
+    businessAddress: 'Tank Bazar, Mumbai / Indiranagar Express Center'
+  },
+  {
+    id: 'enq-2',
+    enquiryRef: 'ENQ-884102',
+    businessName: 'Royal Furniture & Modular Studio',
+    category: 'Home Decor',
+    customerName: 'Priya Sharma',
+    customerPhone: '+91 98765 43210',
+    location: 'Indiranagar, Bengaluru',
+    requirement: 'Inquiring about 3D modular kitchen design estimate, acrylic finish cabinets, and German soft-close hinges. Site measurement visit required.',
+    preferredTime: 'Immediate Callback (Within 15 mins)',
+    date: '20 Oct 2026, 04:15 PM',
+    status: 'Business Responded',
+    merchantResponse: 'Our lead interior architect can visit your Indiranagar residence tomorrow at 11 AM with laminate swatches and laser measurement tools for free consultation.',
+    businessPhone: '+91 98201 55667',
+    businessWhatsapp: '919820155667',
+    businessAddress: '12th Main Road, HAL 2nd Stage, Indiranagar, Bengaluru'
+  },
+  {
+    id: 'enq-3',
+    enquiryRef: 'ENQ-773103',
+    businessName: 'UrbanSpark Deep Cleaning Solutions',
+    category: 'Home Services',
+    customerName: 'Priya Sharma',
+    customerPhone: '+91 98765 43210',
+    location: 'Indiranagar, Bengaluru',
+    requirement: 'Complete 3BHK deep cleaning including chimney degreasing, bathroom descaling, and balcony jet wash before housewarming function.',
+    preferredTime: 'Tomorrow Morning (9 AM - 12 PM)',
+    date: '19 Oct 2026, 09:40 AM',
+    status: 'Customer Contacted',
+    merchantResponse: 'Technician team of 3 verified cleaning specialists assigned. Equipment includes single-disc scrubbers and eco-friendly chemicals.',
+    businessPhone: '+91 98481 11223',
+    businessWhatsapp: '919848111223',
+    businessAddress: 'Plot 44, Cyber Hills, Bengaluru'
+  },
+  {
+    id: 'enq-4',
+    enquiryRef: 'ENQ-662104',
+    businessName: 'QuickFix Electrical & Appliance Care',
+    category: 'Home Services',
+    customerName: 'Priya Sharma',
+    customerPhone: '+91 98765 43210',
+    location: 'Indiranagar, Bengaluru',
+    requirement: 'Master bedroom split AC not cooling adequately. Fan blower makes vibration sound. Need technician inspection.',
+    preferredTime: 'Today Evening (5 PM - 8 PM)',
+    date: '18 Oct 2026, 02:10 PM',
+    status: 'Closed',
+    merchantResponse: 'Technician visited and completed filter deep-clean and gas pressure check. Diagnostic confirmed working at optimal 18°C.',
+    businessPhone: '+91 98110 99887',
+    businessWhatsapp: '919811099887',
+    businessAddress: 'Indiranagar BDA Complex, Bengaluru'
   }
 ];
