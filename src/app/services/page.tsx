@@ -93,12 +93,12 @@ export default function ServicesPage() {
 
                 <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
                   <div>
-                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">Starts from</span>
-                    <span className="text-base font-bold text-slate-900">₹{serv.priceStart}</span>
+                    <span className="text-[10px] text-slate-400 uppercase font-semibold block">Merchant Connection</span>
+                    <span className="text-xs font-bold text-emerald-600">Free Enquiry</span>
                   </div>
 
                   <span className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 group-hover:translate-x-1 transition-transform">
-                    <span>View Details & Book</span>
+                    <span>Send Enquiry</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>

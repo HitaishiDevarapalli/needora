@@ -18,7 +18,8 @@ import {
   HelpCircle,
   ArrowRight,
   Sparkles,
-  PhoneCall
+  PhoneCall,
+  Send
 } from 'lucide-react';
 
 interface ServicePageProps {
@@ -130,11 +131,11 @@ export default function SingleServicePage({ params }: ServicePageProps) {
                 </div>
               </div>
 
-              {/* Instant Book Action Pill */}
+              {/* Direct Free Enquiry Action Pill */}
               <div className="bg-slate-900 text-white rounded-2xl p-4 flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Starting Price</span>
-                  <span className="text-2xl font-black text-white">₹{service.priceStart}</span>
+                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Client Connection</span>
+                  <span className="text-sm font-bold text-white">No Payment • Free Enquiry</span>
                 </div>
 
                 <button
@@ -142,8 +143,8 @@ export default function SingleServicePage({ params }: ServicePageProps) {
                   onClick={() => setBookingOpen(true)}
                   className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold text-xs sm:text-sm rounded-xl transition-all shadow-md flex items-center gap-2"
                 >
-                  <span>Book This Service</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <Send className="w-4 h-4" />
+                  <span>Send Enquiry to Merchant</span>
                 </button>
               </div>
             </div>
@@ -151,15 +152,15 @@ export default function SingleServicePage({ params }: ServicePageProps) {
           </div>
         </div>
 
-        {/* Packages & Pricing Section */}
+        {/* Packages & Service Options with NO AMOUNT */}
         {service.packages && service.packages.length > 0 && (
           <section className="mb-14">
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
-                Select Package & Options
+                Service Scopes & Inclusions
               </h2>
               <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Transparent pricing with no hidden charges. All taxes included.
+                Select an option below to notify the merchant of your exact issue.
               </p>
             </div>
 
@@ -167,7 +168,10 @@ export default function SingleServicePage({ params }: ServicePageProps) {
               {service.packages.map((pkg) => (
                 <div
                   key={pkg.id}
-                  onClick={() => setSelectedPackage(pkg)}
+                  onClick={() => {
+                    setSelectedPackage(pkg);
+                    setBookingOpen(true);
+                  }}
                   className={`relative p-6 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
                     selectedPackage?.id === pkg.id
                       ? 'border-blue-600 bg-white ring-2 ring-blue-600/20 shadow-md'
@@ -176,7 +180,7 @@ export default function SingleServicePage({ params }: ServicePageProps) {
                 >
                   {pkg.popular && (
                     <span className="absolute -top-3 right-6 bg-blue-600 text-white text-[10px] font-bold px-3 py-0.5 rounded-full uppercase tracking-wider">
-                      Most Popular
+                      Most Requested
                     </span>
                   )}
 
@@ -187,8 +191,8 @@ export default function SingleServicePage({ params }: ServicePageProps) {
 
                   <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                     <div>
-                      <span className="text-xs text-slate-400">Total</span>
-                      <div className="text-xl font-black text-slate-900">₹{pkg.price}</div>
+                      <span className="text-xs text-slate-400">Direct Contact</span>
+                      <div className="text-xs font-bold text-emerald-600">Free Enquiry Lead</div>
                     </div>
 
                     <button
@@ -198,9 +202,10 @@ export default function SingleServicePage({ params }: ServicePageProps) {
                         setSelectedPackage(pkg);
                         setBookingOpen(true);
                       }}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold hover:bg-blue-700 transition-colors"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold hover:bg-blue-700 transition-colors flex items-center gap-1.5"
                     >
-                      Choose Package
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Send Enquiry</span>
                     </button>
                   </div>
                 </div>

@@ -1,47 +1,53 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Calendar, Clock, MapPin, CreditCard, CheckCircle, ShieldCheck } from 'lucide-react';
+import { 
+  X, 
+  Calendar, 
+  Clock, 
+  MapPin, 
+  CheckCircle, 
+  ShieldCheck, 
+  Send, 
+  MessageSquare, 
+  Phone, 
+  FileText,
+  BellRing
+} from 'lucide-react';
 import { ServiceItem } from '@/types';
 
 interface BookingModalProps {
   service: ServiceItem | null;
   onClose: () => void;
-  onOrderPlaced: (orderData: any) => void;
+  onOrderPlaced: (enquiryData: any) => void;
 }
 
 export default function BookingModal({ service, onClose, onOrderPlaced }: BookingModalProps) {
   if (!service) return null;
 
-  const [date, setDate] = useState('Tomorrow, 22 Oct');
-  const [slot, setSlot] = useState('10:00 AM - 01:00 PM');
   const [fullName, setFullName] = useState('Priya Sharma');
   const [phone, setPhone] = useState('+91 98765 43210');
-  const [address, setAddress] = useState('Flat 402, Sai Residency, Indiranagar, Bengaluru - 560038');
-  const [paymentMethod, setPaymentMethod] = useState<'UPI' | 'Card' | 'Cash on Delivery'>('UPI');
+  const [location, setLocation] = useState('Indiranagar, Bengaluru');
+  const [preferredTime, setPreferredTime] = useState('Immediate Callback (Within 15 mins)');
+  const [clientIssue, setClientIssue] = useState(`Need urgent assistance and quote for ${service.title}. Looking for verified service with warranty.`);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [orderRef, setOrderRef] = useState('');
-
-  const subtotal = service.priceStart;
-  const deliveryFee = 40;
-  const tax = Math.round(subtotal * 0.05);
-  const total = subtotal + deliveryFee + tax;
+  const [enquiryRef, setEnquiryRef] = useState('');
 
   const handleConfirm = (e: React.FormEvent) => {
     e.preventDefault();
-    const newOrderRef = 'NDR-' + Math.floor(100000 + Math.random() * 900000);
-    setOrderRef(newOrderRef);
+    const newEnquiryRef = 'ENQ-' + Math.floor(100000 + Math.random() * 900000);
+    setEnquiryRef(newEnquiryRef);
     setIsSuccess(true);
     
     onOrderPlaced({
-      orderNumber: newOrderRef,
+      orderNumber: newEnquiryRef,
       serviceTitle: service.title,
       customerName: fullName,
       phone,
-      address,
-      slot: `${date}, ${slot}`,
-      total,
-      paymentMethod
+      location,
+      issue: clientIssue,
+      preferredTime,
+      merchantName: service.providerName
     });
   };
 
@@ -51,13 +57,18 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
         
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-slate-50/50">
-          <div>
-            <h3 className="text-lg font-bold text-slate-900">
-              {isSuccess ? 'Booking Confirmed' : `Book ${service.title}`}
-            </h3>
-            <p className="text-xs text-slate-500">
-              {service.providerName}
-            </p>
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+              <Send className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-900">
+                {isSuccess ? 'Enquiry Sent to Merchant' : `Send Free Enquiry — ${service.title}`}
+              </h3>
+              <p className="text-[11px] text-slate-500">
+                Direct lead message dispatched to {service.providerName}
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -73,35 +84,39 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
               <CheckCircle className="w-8 h-8" />
             </div>
             <div>
-              <h4 className="text-xl font-bold text-slate-900">Order Placed Successfully!</h4>
-              <p className="text-sm text-slate-500 mt-1">
-                Booking Reference: <span className="font-mono font-bold text-brand-600">{orderRef}</span>
+              <h4 className="text-xl font-bold text-slate-900">Enquiry Dispatched to Merchant!</h4>
+              <p className="text-xs text-slate-500 mt-1">
+                Enquiry Reference: <span className="font-mono font-bold text-blue-600">{enquiryRef}</span>
               </p>
             </div>
-            <div className="bg-slate-50 rounded-2xl p-4 text-xs text-slate-600 text-left space-y-2 border border-slate-200">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Scheduled For:</span>
-                <span className="font-semibold">{date} ({slot})</span>
+
+            {/* Merchant Dispatch Alert notification */}
+            <div className="bg-blue-50/80 rounded-2xl p-4 text-xs text-blue-900 text-left space-y-2 border border-blue-200">
+              <div className="flex items-center gap-2 font-bold text-blue-700">
+                <BellRing className="w-4 h-4 text-blue-600 shrink-0" />
+                <span>Instant Merchant Alert Dispatched</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Total Amount:</span>
-                <span className="font-bold text-slate-900">₹{total}</span>
+              <p className="text-[11px] text-blue-800 leading-relaxed">
+                An automated SMS and WhatsApp notification was just transmitted to <strong className="font-semibold">{service.providerName}</strong>:
+              </p>
+              <div className="bg-white/90 p-3 rounded-xl font-mono text-[11px] text-slate-700 border border-blue-100">
+                &ldquo;New Client Enquiry from <span className="font-bold">{fullName}</span> ({phone}). Issue: <span className="font-bold">{clientIssue}</span>. Callback requested: {preferredTime}.&rdquo;
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Payment:</span>
-                <span className="font-semibold text-emerald-600">{paymentMethod}</span>
-              </div>
+              <p className="text-[10px] text-blue-600 pt-1 font-semibold">
+                ✓ No transaction required. The verified merchant will call your mobile number directly.
+              </p>
             </div>
+
             <button
               onClick={onClose}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors shadow-sm"
+              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-sm text-xs"
             >
-              Done & Return
+              Done & Return to Marketplace
             </button>
           </div>
         ) : (
           <form onSubmit={handleConfirm} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-            {/* Service Summary Card */}
+            {/* Service Summary Card with NO PRICES */}
             <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 border border-slate-200">
               <img
                 src={service.image}
@@ -109,131 +124,100 @@ export default function BookingModal({ service, onClose, onOrderPlaced }: Bookin
                 className="w-14 h-14 rounded-xl object-cover shrink-0"
               />
               <div className="flex-1 min-w-0">
+                <div className="text-xs font-bold text-blue-600 uppercase tracking-wider">{service.category}</div>
                 <div className="text-sm font-bold text-slate-900 truncate">{service.title}</div>
-                <div className="text-xs text-slate-500">Starts at ₹{service.priceStart} • {service.duration || 'Fast delivery'}</div>
+                <div className="text-xs text-slate-500">{service.providerName}</div>
               </div>
-            </div>
-
-            {/* Date & Time Slot selection */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Preferred Date</label>
-                <div className="relative">
-                  <Calendar className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
-                  <select
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-medium text-slate-800"
-                  >
-                    <option>Today (Express)</option>
-                    <option>Tomorrow, 22 Oct</option>
-                    <option>Thursday, 23 Oct</option>
-                    <option>Friday, 24 Oct</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Time Slot</label>
-                <div className="relative">
-                  <Clock className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" />
-                  <select
-                    value={slot}
-                    onChange={(e) => setSlot(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 font-medium text-slate-800"
-                  >
-                    <option>09:00 AM - 12:00 PM</option>
-                    <option>10:00 AM - 01:00 PM</option>
-                    <option>02:00 PM - 05:00 PM</option>
-                    <option>06:00 PM - 09:00 PM</option>
-                  </select>
-                </div>
-              </div>
+              <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full shrink-0">
+                100% Free
+              </span>
             </div>
 
             {/* Recipient Details */}
-            <div className="space-y-2">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Your Name</label>
-                <input
-                  type="text"
-                  required
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 text-slate-800"
-                />
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Your Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="e.g. Priya Sharma"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 text-slate-800 font-medium"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Your Mobile Phone *</label>
+                  <input
+                    type="tel"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+91 98765 43210"
+                    className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 text-slate-800 font-medium"
+                  />
+                </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number (with OTP verification)</label>
-                <input
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 text-slate-800"
-                />
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Your City / Area *</label>
+                <div className="relative">
+                  <MapPin className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+                  <input
+                    type="text"
+                    required
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g. Indiranagar, Bengaluru or Tank Bazar, Mumbai"
+                    className="w-full pl-8 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 text-slate-800 font-medium"
+                  />
+                </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">Delivery / Service Address</label>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Describe Your Issue / Requirement for the Merchant *
+                </label>
                 <textarea
                   required
-                  rows={2}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 text-slate-800 resize-none"
+                  rows={3}
+                  value={clientIssue}
+                  onChange={(e) => setClientIssue(e.target.value)}
+                  placeholder="e.g. Need quotation for kitchen deep cleaning and chimney degreasing this Saturday..."
+                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 text-slate-800 font-medium resize-none"
                 />
               </div>
-            </div>
 
-            {/* Payment Mode Selection */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Payment Method</label>
-              <div className="grid grid-cols-3 gap-2">
-                {(['UPI', 'Card', 'Cash on Delivery'] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setPaymentMethod(mode)}
-                    className={`py-2 px-2 text-xs font-semibold rounded-xl border text-center transition-all ${
-                      paymentMethod === mode
-                        ? 'border-blue-600 bg-blue-50 text-blue-700 shadow-xs'
-                        : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-                    }`}
-                  >
-                    {mode}
-                  </button>
-                ))}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Preferred Time for Merchant to Call</label>
+                <select
+                  value={preferredTime}
+                  onChange={(e) => setPreferredTime(e.target.value)}
+                  className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 text-slate-800 font-medium"
+                >
+                  <option>Immediate Callback (Within 15 mins)</option>
+                  <option>Today Afternoon (12 PM - 3 PM)</option>
+                  <option>Today Evening (5 PM - 8 PM)</option>
+                  <option>Tomorrow Morning (9 AM - 12 PM)</option>
+                </select>
               </div>
             </div>
 
-            {/* Price Transparency Breakdown */}
-            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 space-y-1.5 text-xs">
-              <div className="flex justify-between text-slate-600">
-                <span>Base Service Rate</span>
-                <span>₹{subtotal}</span>
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Convenience / Delivery Fee</span>
-                <span>₹{deliveryFee}</span>
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Taxes (GST 5%)</span>
-                <span>₹{tax}</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t border-slate-200 text-sm font-bold text-slate-900">
-                <span>Total Payable</span>
-                <span className="text-brand-700">₹{total}</span>
-              </div>
+            {/* Zero Cost Assurance Banner */}
+            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-between text-xs text-slate-600">
+              <span className="font-medium">Direct Enquiry Fee:</span>
+              <span className="font-bold text-emerald-600 uppercase">100% Free Service Enquiry</span>
             </div>
 
-            {/* Confirm button */}
+            {/* Submit button */}
             <button
               type="submit"
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold rounded-xl shadow-md transition-all text-sm"
+              className="w-full py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-xl shadow-md transition-all text-xs flex items-center justify-center gap-2"
             >
-              Confirm & Book (₹{total})
+              <Send className="w-4 h-4" />
+              <span>Send Enquiry to {service.providerName}</span>
             </button>
           </form>
         )}

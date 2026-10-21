@@ -9,7 +9,6 @@ import {
   X, 
   MapPin, 
   User, 
-  ShoppingBag, 
   Phone, 
   ShieldCheck, 
   Store,
@@ -275,20 +274,14 @@ export default function Header({
                 <Search className="w-5 h-5" />
               </button>
 
-              {/* Cart Button */}
-              <button
-                onClick={onOpenCart}
-                className="relative p-2.5 text-slate-600 hover:text-brand-600 hover:bg-slate-100 rounded-full transition-colors"
-                title="View Cart"
-                aria-label="View Cart"
+              {/* Direct Free Enquiry CTA */}
+              <Link
+                href="/services"
+                className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors"
+                title="Send Free Enquiry to Local Merchants"
               >
-                <ShoppingBag className="w-5 h-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-brand-600 text-white font-bold text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-                    {cartCount}
-                  </span>
-                )}
-              </button>
+                <span>Free Enquiry</span>
+              </Link>
 
               {/* Login button */}
               <button

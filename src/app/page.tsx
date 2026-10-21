@@ -13,7 +13,6 @@ import BottomCtaSection from '@/components/BottomCtaSection';
 import BookingModal from '@/components/BookingModal';
 import VoiceSearchModal from '@/components/VoiceSearchModal';
 import AuthModal from '@/components/AuthModal';
-import CartDrawer from '@/components/CartDrawer';
 import { ServiceItem } from '@/types';
 import { POPULAR_SERVICES } from '@/data/mockData';
 
@@ -22,9 +21,8 @@ export default function Home() {
   const [voiceSearchOpen, setVoiceSearchOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
-  const [cartOpen, setCartOpen] = useState(false);
   const [activeFilterCategory, setActiveFilterCategory] = useState<string>('All');
-  const [recentOrderSuccess, setRecentOrderSuccess] = useState<string | null>(null);
+  const [recentEnquirySuccess, setRecentEnquirySuccess] = useState<string | null>(null);
 
   const handleOpenAuth = (mode: 'login' | 'signup') => {
     setAuthMode(mode);
@@ -52,11 +50,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      {/* Toast notification for order placed */}
-      {recentOrderSuccess && (
+      {/* Toast notification for enquiry dispatched to merchant */}
+      {recentEnquirySuccess && (
         <div className="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 animate-bounce">
-          <span>✓ Order placed successfully! Tracking ref: {recentOrderSuccess}</span>
-          <button onClick={() => setRecentOrderSuccess(null)} className="ml-2 font-bold text-emerald-200">✕</button>
+          <span>✓ Enquiry dispatched to merchant! Ref: {recentEnquirySuccess} (SMS & WhatsApp alert transmitted)</span>
+          <button onClick={() => setRecentEnquirySuccess(null)} className="ml-2 font-bold text-emerald-200">✕</button>
         </div>
       )}
 
@@ -64,8 +62,6 @@ export default function Home() {
       <Header
         onOpenSearch={() => setVoiceSearchOpen(true)}
         onOpenAuth={handleOpenAuth}
-        onOpenCart={() => setCartOpen(true)}
-        cartCount={2}
       />
 
       {/* Main Content Sections */}
@@ -111,7 +107,7 @@ export default function Home() {
         service={selectedService}
         onClose={() => setSelectedService(null)}
         onOrderPlaced={(order) => {
-          setRecentOrderSuccess(order.orderNumber);
+          setRecentEnquirySuccess(order.orderNumber);
         }}
       />
 
@@ -131,14 +127,6 @@ export default function Home() {
           if (role === 'merchant') {
             window.location.href = '/merchant';
           }
-        }}
-      />
-
-      <CartDrawer
-        isOpen={cartOpen}
-        onClose={() => setCartOpen(false)}
-        onCheckout={() => {
-          setSelectedService(POPULAR_SERVICES[2]); // open booking checkout with Home Cleaning
         }}
       />
     </div>
