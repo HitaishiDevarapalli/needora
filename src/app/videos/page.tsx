@@ -16,7 +16,8 @@ import {
   Play, 
   Pause,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Sparkles
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -32,11 +33,23 @@ import {
 export default function VideosPage() {
   const [videos, setVideos] = useState<StoredVideo[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [currentUser, setCurrentUser] = useState(getCurrentUser());
   const [commentsModalOpen, setCommentsModalOpen] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [commentAuthor, setCommentAuthor] = useState('');
   const [selectedBusinessForEnquiry, setSelectedBusinessForEnquiry] = useState<{ id: string; name: string; category: string } | null>(null);
+
+  const REEL_CATEGORIES = [
+    'All',
+    'Home Decor',
+    'Food & Dining',
+    'Home Cleaning',
+    'Beauty & Salon',
+    'Repairs & Services',
+    'Real Estate',
+    'Healthcare'
+  ];
 
   const loadVideos = () => {
     const list = getStoredVideos();
@@ -50,7 +63,11 @@ export default function VideosPage() {
     return () => window.removeEventListener('needora_storage_update', loadVideos);
   }, []);
 
-  const currentVideo = videos[currentIndex];
+  const filteredVideos = selectedCategory === 'All'
+    ? videos
+    : videos.filter(v => v.category.toLowerCase().includes(selectedCategory.toLowerCase()) || selectedCategory.toLowerCase().includes(v.category.toLowerCase()));
+
+  const currentVideo = filteredVideos[currentIndex] || filteredVideos[0];
 
   const handleLike = (videoId: string) => {
     const uid = currentUser?.id || 'guest_user';
@@ -68,7 +85,7 @@ export default function VideosPage() {
   };
 
   const handleNext = () => {
-    if (currentIndex < videos.length - 1) {
+    if (currentIndex < filteredVideos.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
@@ -100,13 +117,34 @@ export default function VideosPage() {
           </div>
         </div>
 
+        {/* Category Discovery Pills (Requirement 1) */}
+        <div className="w-full max-w-lg flex items-center gap-2 overflow-x-auto pb-3 mb-2 no-scrollbar">
+          {REEL_CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => {
+                setSelectedCategory(cat);
+                setCurrentIndex(0);
+              }}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                selectedCategory === cat
+                  ? 'bg-rose-600 text-white shadow-md shadow-rose-900/40'
+                  : 'bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
         {/* Empty State */}
-        {videos.length === 0 ? (
+        {filteredVideos.length === 0 ? (
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-10 max-w-md w-full text-center my-12 shadow-2xl">
             <div className="w-16 h-16 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
               <PlusCircle className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-bold text-white mb-2">No videos uploaded yet</h2>
+            <h2 className="text-xl font-bold text-white mb-2">No {selectedCategory !== 'All' ? selectedCategory : ''} reels yet</h2>
             <p className="text-xs text-slate-400 mb-6 leading-relaxed">
               Be the first local merchant or customer to share a video showcase! Upload short store walkthroughs, services demos, or seasonal announcements.
             </p>
@@ -132,7 +170,7 @@ export default function VideosPage() {
 
             {/* Top Reel Counter */}
             <div className="absolute top-4 left-4 z-20 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-semibold text-white/90">
-              {currentIndex + 1} / {videos.length}
+              {currentIndex + 1} / {filteredVideos.length}
             </div>
 
             {/* Vertical Video Navigation Arrows */}
@@ -151,9 +189,9 @@ export default function VideosPage() {
               <button
                 type="button"
                 onClick={handleNext}
-                disabled={currentIndex === videos.length - 1}
+                disabled={currentIndex === filteredVideos.length - 1}
                 className={`p-2 rounded-full bg-black/60 backdrop-blur-md transition-all ${
-                  currentIndex === videos.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-black/90 text-white'
+                  currentIndex === filteredVideos.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-black/90 text-white'
                 }`}
                 title="Next video"
               >
@@ -162,7 +200,7 @@ export default function VideosPage() {
             </div>
 
             {/* Overlay Action Bar on Right */}
-            <div className="absolute right-3 bottom-20 z-20 flex flex-col items-center gap-5">
+            <div className="absolute right-3 bottom-24 z-20 flex flex-col items-center gap-5">
               {/* Like Button */}
               {(() => {
                 const uid = currentUser?.id || 'guest_user';
@@ -221,13 +259,19 @@ export default function VideosPage() {
               </button>
             </div>
 
-            {/* Bottom Content Info Overlay */}
+            {/* Bottom Content Info Overlay with Premium Badge */}
             <div className="relative z-10 p-5 bg-gradient-to-t from-black via-black/70 to-transparent pointer-events-auto">
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                {currentVideo.isPremium && (
+                  <span className="bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-amber-300">
+                    <Sparkles className="w-3 h-3 text-slate-950 fill-current" />
+                    <span>PREMIUM</span>
+                  </span>
+                )}
                 <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold text-white">
                   {currentVideo.merchantName.slice(0, 1)}
                 </div>
-                <span className="text-sm font-bold text-white truncate">{currentVideo.merchantName}</span>
+                <span className="text-sm font-bold text-white truncate max-w-[150px]">{currentVideo.merchantName}</span>
                 <span className="text-[10px] font-bold text-blue-300 bg-blue-900/60 px-2 py-0.5 rounded-full">
                   {currentVideo.category}
                 </span>
@@ -236,18 +280,26 @@ export default function VideosPage() {
               <h3 className="text-sm font-bold text-white mb-1">{currentVideo.title}</h3>
               <p className="text-xs text-slate-300 line-clamp-2 mb-4">{currentVideo.caption}</p>
 
-              {/* Free Enquiry CTA for this Merchant */}
-              <button
-                type="button"
-                onClick={() => setSelectedBusinessForEnquiry({
-                  id: currentVideo.merchantId,
-                  name: currentVideo.merchantName,
-                  category: currentVideo.category,
-                })}
-                className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-lg transition-all"
-              >
-                Send Free Enquiry to {currentVideo.merchantName}
-              </button>
+              {/* Free Enquiry CTA & Store Profile Actions */}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedBusinessForEnquiry({
+                    id: currentVideo.merchantId,
+                    name: currentVideo.merchantName,
+                    category: currentVideo.category,
+                  })}
+                  className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <span>Send Free Enquiry</span>
+                </button>
+                <Link
+                  href={`/explore?category=${encodeURIComponent(currentVideo.category)}`}
+                  className="px-3 py-2.5 bg-white/20 hover:bg-white/30 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center"
+                >
+                  Profile
+                </Link>
+              </div>
             </div>
           </div>
         )}

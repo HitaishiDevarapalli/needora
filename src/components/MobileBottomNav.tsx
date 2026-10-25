@@ -41,10 +41,13 @@ export default function MobileBottomNav() {
           <Link
             key={item.href}
             href={item.href}
-            className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all ${
+            className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all ${
               isActive ? 'text-blue-600' : 'text-slate-500 hover:text-slate-800'
             }`}
           >
+            {item.label === 'Reels' && (
+              <span className="absolute top-0 right-1.5 w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
+            )}
             <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : 'stroke-2'}`} />
             <span className={`text-[10px] mt-0.5 ${isActive ? 'font-bold' : 'font-medium'}`}>
               {item.label}

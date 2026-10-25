@@ -12,7 +12,9 @@ import {
   CheckCircle, 
   Video, 
   PlusCircle,
-  AlertCircle
+  AlertCircle,
+  Sparkles,
+  Store
 } from 'lucide-react';
 import { 
   getStoredVideos, 
@@ -25,6 +27,7 @@ import {
 export default function VideoReelsSection() {
   const [videos, setVideos] = useState<StoredVideo[]>([]);
   const [selectedVideo, setSelectedVideo] = useState<StoredVideo | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState('');
@@ -35,6 +38,17 @@ export default function VideoReelsSection() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const [currentUser, setCurrentUser] = useState(getCurrentUser());
+
+  const REEL_CATEGORIES = [
+    'All',
+    'Home Decor',
+    'Food & Dining',
+    'Home Cleaning',
+    'Beauty & Salon',
+    'Repairs & Services',
+    'Real Estate',
+    'Healthcare'
+  ];
 
   const loadVideos = () => {
     setVideos(getStoredVideos());
@@ -139,92 +153,130 @@ export default function VideoReelsSection() {
           </div>
         </div>
 
+        {/* Category-Wise Filter Tabs (Requirement 1) */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar">
+          {REEL_CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                selectedCategory === cat
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20 scale-105'
+                  : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
         {/* Video Cards Grid or Empty State */}
-        {videos.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-dashed border-slate-300 p-10 text-center max-w-lg mx-auto shadow-xs">
-            <div className="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-4">
-              <Video className="w-7 h-7" />
-            </div>
-            <h3 className="font-bold text-slate-900 text-base">No video reels uploaded yet</h3>
-            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-              Local store owners can showcase their craft, store walkthroughs, or daily offers right here. Zero fake videos.
-            </p>
-            <div className="mt-5 flex items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => setUploadModalOpen(true)}
-                className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all inline-flex items-center gap-1.5"
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span>Upload First Reel</span>
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
-            {videos.slice(0, 5).map((vid) => {
-              const isLiked = vid.likes.includes(currentUser?.id || 'guest_user');
-              return (
-                <div
-                  key={vid.id}
-                  onClick={() => setSelectedVideo(vid)}
-                  className="group relative h-[380px] sm:h-[400px] rounded-3xl overflow-hidden bg-slate-950 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col justify-between p-4"
-                >
-                  <video
-                    src={vid.videoUrl}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    muted
-                    playsInline
-                  />
+        {(() => {
+          const displayedVideos = selectedCategory === 'All' 
+            ? videos 
+            : videos.filter(v => v.category.toLowerCase().includes(selectedCategory.toLowerCase()) || selectedCategory.toLowerCase().includes(v.category.toLowerCase()));
 
-                  {/* Gradient Vignette Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-black/30 group-hover:via-slate-950/20 transition-all pointer-events-none" />
-
-                  {/* Top Details */}
-                  <div className="relative z-10 flex items-center justify-between text-white text-[11px] font-bold">
-                    <span className="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 flex items-center gap-1">
-                      <Eye className="w-3 h-3 text-slate-300" />
-                      <span>{vid.views} views</span>
-                    </span>
-
-                    <span className="bg-blue-600/80 backdrop-blur-md px-2 py-0.5 rounded-md text-[10px]">
-                      {vid.category}
-                    </span>
-                  </div>
-
-                  {/* Center Play Button */}
-                  <div className="relative z-10 flex items-center justify-center my-auto pointer-events-none">
-                    <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md group-hover:bg-blue-600 text-white flex items-center justify-center transition-all duration-300 shadow-xl group-hover:scale-110 border border-white/40">
-                      <Play className="w-6 h-6 fill-current ml-0.5" />
-                    </div>
-                  </div>
-
-                  {/* Bottom Details Overlay */}
-                  <div className="relative z-10 space-y-2 text-white">
-                    <h3 className="text-xs font-bold line-clamp-2 leading-snug group-hover:text-blue-300 transition-colors">
-                      {vid.title}
-                    </h3>
-
-                    <div className="flex items-center justify-between pt-1 border-t border-white/15 text-[11px] text-slate-300">
-                      <span className="truncate max-w-[130px] font-medium">{vid.merchantName}</span>
-
-                      <button
-                        type="button"
-                        onClick={(e) => handleLike(e, vid.id)}
-                        className={`flex items-center gap-1 font-bold ${
-                          isLiked ? 'text-rose-500' : 'text-slate-300 hover:text-rose-400'
-                        }`}
-                      >
-                        <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-current' : ''}`} />
-                        <span className="text-[10px]">{vid.likes.length}</span>
-                      </button>
-                    </div>
-                  </div>
+          if (displayedVideos.length === 0) {
+            return (
+              <div className="bg-white rounded-3xl border border-dashed border-slate-300 p-10 text-center max-w-lg mx-auto shadow-xs">
+                <div className="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-4">
+                  <Video className="w-7 h-7" />
                 </div>
-              );
-            })}
-          </div>
-        )}
+                <h3 className="font-bold text-slate-900 text-base">No {selectedCategory !== 'All' ? selectedCategory : ''} reels yet</h3>
+                <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                  Local store owners can showcase their craft, store walkthroughs, or daily offers in {selectedCategory}. Zero fake videos.
+                </p>
+                <div className="mt-5 flex items-center justify-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUploadCategory(selectedCategory === 'All' ? 'Food & Dining' : selectedCategory);
+                      setUploadModalOpen(true);
+                    }}
+                    className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-xs transition-all inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <PlusCircle className="w-4 h-4" />
+                    <span>Upload First Reel</span>
+                  </button>
+                </div>
+              </div>
+            );
+          }
+
+          return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {displayedVideos.map((vid) => {
+                const isLiked = vid.likes.includes(currentUser?.id || 'guest_user');
+                return (
+                  <div
+                    key={vid.id}
+                    onClick={() => setSelectedVideo(vid)}
+                    className="group relative h-[380px] sm:h-[400px] rounded-3xl overflow-hidden bg-slate-950 shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col justify-between p-4"
+                  >
+                    <video
+                      src={vid.videoUrl}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      muted
+                      playsInline
+                    />
+
+                    {/* Gradient Vignette Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-black/30 group-hover:via-slate-950/20 transition-all pointer-events-none" />
+
+                    {/* Top Details with Premium Tag */}
+                    <div className="relative z-10 flex items-center justify-between text-white text-[11px] font-bold">
+                      {vid.isPremium ? (
+                        <span className="bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-amber-300">
+                          <Sparkles className="w-3 h-3 text-slate-950 fill-current" />
+                          <span>PREMIUM</span>
+                        </span>
+                      ) : (
+                        <span className="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/10 flex items-center gap-1">
+                          <Eye className="w-3 h-3 text-slate-300" />
+                          <span>{vid.views} views</span>
+                        </span>
+                      )}
+
+                      <span className="bg-blue-600/80 backdrop-blur-md px-2 py-0.5 rounded-md text-[10px]">
+                        {vid.category}
+                      </span>
+                    </div>
+
+                    {/* Center Play Button */}
+                    <div className="relative z-10 flex items-center justify-center my-auto pointer-events-none">
+                      <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md group-hover:bg-blue-600 text-white flex items-center justify-center transition-all duration-300 shadow-xl group-hover:scale-110 border border-white/40">
+                        <Play className="w-6 h-6 fill-current ml-0.5" />
+                      </div>
+                    </div>
+
+                    {/* Bottom Details Overlay */}
+                    <div className="relative z-10 space-y-2 text-white">
+                      <h3 className="text-xs font-bold line-clamp-2 leading-snug group-hover:text-blue-300 transition-colors">
+                        {vid.title}
+                      </h3>
+
+                      <div className="flex items-center justify-between pt-1 border-t border-white/15 text-[11px] text-slate-300">
+                        <span className="truncate max-w-[130px] font-medium">{vid.merchantName}</span>
+
+                        <button
+                          type="button"
+                          onClick={(e) => handleLike(e, vid.id)}
+                          className={`flex items-center gap-1 font-bold ${
+                            isLiked ? 'text-rose-500' : 'text-slate-300 hover:text-rose-400'
+                          }`}
+                        >
+                          <Heart className={`w-3.5 h-3.5 ${isLiked ? 'fill-current' : ''}`} />
+                          <span className="text-[10px]">{vid.likes.length}</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()}
 
       </div>
 
@@ -261,11 +313,17 @@ export default function VideoReelsSection() {
             </button>
 
             <div className="relative z-10 p-5 space-y-3 text-white bg-gradient-to-t from-black via-black/80 to-transparent">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold bg-blue-600 px-2 py-0.5 rounded">
+              <div className="flex items-center gap-2 flex-wrap">
+                {selectedVideo.isPremium && (
+                  <span className="bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1 border border-amber-300">
+                    <Sparkles className="w-3 h-3 text-slate-950 fill-current" />
+                    <span>PREMIUM</span>
+                  </span>
+                )}
+                <span className="text-xs font-bold bg-blue-600 px-2.5 py-0.5 rounded-md">
                   {selectedVideo.merchantName}
                 </span>
-                <span className="text-[10px] text-slate-300">
+                <span className="text-[10px] text-slate-300 bg-white/10 px-2 py-0.5 rounded-md">
                   {selectedVideo.category}
                 </span>
               </div>
@@ -273,18 +331,18 @@ export default function VideoReelsSection() {
               <h3 className="text-base font-bold leading-snug">{selectedVideo.title}</h3>
               <p className="text-xs text-slate-300 leading-relaxed">{selectedVideo.caption}</p>
 
-              <div className="pt-2 flex gap-2">
+              <div className="pt-2 flex flex-col sm:flex-row gap-2">
                 <Link
-                  href="/videos"
-                  className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold text-center shadow-lg transition-colors"
+                  href={`/services?category=${encodeURIComponent(selectedVideo.category)}`}
+                  className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold text-center shadow-lg transition-colors flex items-center justify-center gap-1.5"
                 >
-                  Watch Full Reels Feed
+                  <span>Send Free Enquiry to Merchant</span>
                 </Link>
                 <Link
-                  href="/services"
-                  className="px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors"
+                  href="/videos"
+                  className="py-3 px-4 bg-white/20 hover:bg-white/30 text-white rounded-xl text-xs font-bold text-center transition-colors"
                 >
-                  Free Enquiry
+                  Full Reels Feed
                 </Link>
               </div>
             </div>

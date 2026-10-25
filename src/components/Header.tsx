@@ -21,6 +21,7 @@ import {
   Globe
 } from 'lucide-react';
 import { CATEGORIES } from '@/data/mockData';
+import { getCurrentUser, logoutUser, UserProfile } from '@/lib/storage';
 
 interface HeaderProps {
   onOpenSearch?: () => void;
@@ -43,6 +44,15 @@ export default function Header({
   const [detectingGps, setDetectingGps] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState<'English' | 'తెలుగు' | 'हिंदी'>('English');
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    setCurrentUser(getCurrentUser());
+    const handleUpdate = () => setCurrentUser(getCurrentUser());
+    window.addEventListener('needora_storage_update', handleUpdate);
+    return () => window.removeEventListener('needora_storage_update', handleUpdate);
+  }, []);
 
   // HTML5 Browser Geolocation Detection
   const handleDetectLocation = () => {
@@ -247,12 +257,6 @@ export default function Header({
                 )}
               </div>
 
-              {/* Videos / Reels */}
-              <Link href="/videos" className="text-slate-700 hover:text-brand-600 transition-colors flex items-center gap-1">
-                <span>Reels</span>
-                <span className="px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-600 font-bold text-[10px] border border-rose-200">Video</span>
-              </Link>
-
               {/* Customer Enquiries Tracking (Master Spec Section 10) */}
               <Link 
                 href="/my-enquiries" 
@@ -261,14 +265,6 @@ export default function Header({
                 <MessageSquare className="w-3.5 h-3.5 text-blue-600" />
                 <span>My Enquiries</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              </Link>
-
-              {/* Dora AI */}
-              <Link 
-                href="/dora" 
-                className="text-indigo-600 hover:text-indigo-700 transition-colors flex items-center gap-1 font-semibold"
-              >
-                <span>Dora AI</span>
               </Link>
 
               <Link href="/contact" className="text-slate-700 hover:text-brand-600 transition-colors">
@@ -344,21 +340,113 @@ export default function Header({
                 <span>Free Enquiry</span>
               </Link>
 
-              {/* Login button */}
-              <button
-                onClick={() => onOpenAuth && onOpenAuth('login')}
-                className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 border border-slate-200 hover:border-slate-300 rounded-lg transition-colors bg-white hover:bg-slate-50 shadow-xs"
-              >
-                Login
-              </button>
+              {/* Auth Buttons or Active User Profile Pill */}
+              {currentUser ? (
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                    className="flex items-center gap-2 p-1.5 pr-3 rounded-full border border-slate-200 hover:border-blue-400 bg-white hover:bg-slate-50 transition-all shadow-xs cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                      {currentUser.name ? currentUser.name.slice(0, 1).toUpperCase() : 'U'}
+                    </div>
+                    <div className="hidden sm:flex flex-col text-left">
+                      <span className="text-xs font-bold text-slate-800 leading-tight truncate max-w-[110px]">
+                        {currentUser.name || 'Account'}
+                      </span>
+                      <span className="text-[9px] font-bold uppercase text-blue-600 tracking-wider">
+                        {currentUser.role}
+                      </span>
+                    </div>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  </button>
 
-              {/* Sign Up button */}
-              <button
-                onClick={() => onOpenAuth && onOpenAuth('signup')}
-                className="inline-flex items-center justify-center px-5 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg shadow-sm hover:shadow transition-all"
-              >
-                Sign Up
-              </button>
+                  {userDropdownOpen && (
+                    <div className="absolute right-0 top-full mt-2 w-60 bg-white rounded-2xl shadow-xl border border-slate-100 p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                      <div className="px-3 py-2 border-b border-slate-100 mb-1">
+                        <p className="text-xs font-bold text-slate-900 truncate">{currentUser.name}</p>
+                        <p className="text-[11px] text-slate-500 truncate">{currentUser.email || currentUser.phone}</p>
+                        <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase bg-blue-50 text-blue-700 border border-blue-200">
+                          {currentUser.role} Account
+                        </span>
+                      </div>
+
+                      <Link
+                        href="/my-enquiries"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
+                      >
+                        <MessageSquare className="w-4 h-4 text-blue-600" />
+                        <span>My Enquiries</span>
+                      </Link>
+
+                      {currentUser.role === 'merchant' && (
+                        <Link
+                          href="/merchant"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
+                        >
+                          <Store className="w-4 h-4 text-rose-600" />
+                          <span>Merchant Dashboard</span>
+                        </Link>
+                      )}
+
+                      {currentUser.role === 'admin' && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-purple-600" />
+                          <span>Admin Control Center</span>
+                        </Link>
+                      )}
+
+                      <div className="pt-1 mt-1 border-t border-slate-100">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            logoutUser();
+                            setUserDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors flex items-center justify-between cursor-pointer"
+                        >
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/login"
+                    onClick={(e) => {
+                      if (onOpenAuth) {
+                        e.preventDefault();
+                        onOpenAuth('login');
+                      }
+                    }}
+                    className="hidden sm:inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 border border-slate-200 hover:border-slate-300 rounded-lg transition-colors bg-white hover:bg-slate-50 shadow-xs"
+                  >
+                    Login
+                  </Link>
+
+                  <Link
+                    href="/signup"
+                    onClick={(e) => {
+                      if (onOpenAuth) {
+                        e.preventDefault();
+                        onOpenAuth('signup');
+                      }
+                    }}
+                    className="inline-flex items-center justify-center px-4 sm:px-5 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg shadow-sm hover:shadow transition-all"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
 
               {/* Mobile Hamburger */}
               <button
@@ -417,22 +505,6 @@ export default function Header({
                 All Categories & Subcategories
               </Link>
               <Link 
-                href="/videos" 
-                onClick={() => setMobileMenuOpen(false)}
-                className="py-2 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between"
-              >
-                <span>Reels & Videos</span>
-                <span className="px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-600 font-bold text-[10px] border border-rose-200">Reels</span>
-              </Link>
-              <Link 
-                href="/dora" 
-                onClick={() => setMobileMenuOpen(false)}
-                className="py-2 px-3 rounded-lg hover:bg-indigo-50 text-indigo-700 font-bold flex items-center justify-between"
-              >
-                <span>Dora AI Assistant</span>
-                <span className="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full font-bold">AI</span>
-              </Link>
-              <Link 
                 href="/saved" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-2 px-3 rounded-lg hover:bg-slate-50 font-medium"
@@ -466,20 +538,62 @@ export default function Header({
                 About Us
               </Link>
               <Link 
-                href="/blog" 
-                onClick={() => setMobileMenuOpen(false)}
-                className="py-2 px-3 rounded-lg hover:bg-slate-50 flex items-center justify-between"
-              >
-                <span>Blog Reels</span>
-                <span className="px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-600 font-bold text-[10px] border border-rose-200">Reels</span>
-              </Link>
-              <Link 
                 href="/contact" 
                 onClick={() => setMobileMenuOpen(false)}
                 className="py-2 px-3 rounded-lg hover:bg-slate-50"
               >
                 Contact Support
               </Link>
+
+              {/* Mobile Auth Actions */}
+              <div className="pt-2 border-t border-slate-100">
+                {currentUser ? (
+                  <div className="p-3 bg-slate-50 rounded-2xl space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-900">{currentUser.name}</span>
+                      <span className="text-[10px] font-extrabold uppercase bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                        {currentUser.role}
+                      </span>
+                    </div>
+                    {currentUser.role === 'merchant' && (
+                      <Link
+                        href="/merchant"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block text-xs font-bold text-rose-600 hover:underline"
+                      >
+                        → Open Merchant Dashboard
+                      </Link>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logoutUser();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full text-center py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs font-bold rounded-xl transition-colors"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="py-2.5 text-center text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="py-2.5 text-center text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs"
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

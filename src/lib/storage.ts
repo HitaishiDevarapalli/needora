@@ -66,6 +66,7 @@ export interface StoredVideo {
   merchantId: string;
   merchantName: string;
   category: string;
+  isPremium?: boolean; // Premium badge for higher-tier subscribed businesses
   likes: string[]; // array of user IDs who liked
   comments: {
     id: string;
@@ -270,16 +271,84 @@ export function updateEnquiryStatus(id: string, status: StoredEnquiry['status'],
   }
 }
 
+// Default sample merchant reels for category discovery and verification
+const INITIAL_MERCHANT_REELS: StoredVideo[] = [
+  {
+    id: 'VID-PREM-101',
+    title: 'Modern Luxury Sofa & Handcrafted Living Room Decor',
+    caption: 'Discover our exclusive solid wood coffee tables, modular sofas, and lighting fixtures. Visit our showroom or send a direct enquiry for custom designs!',
+    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-modern-apartment-living-room-with-furniture-41481-large.mp4',
+    merchantId: 'BIZ-DECOR-01',
+    merchantName: 'Royal Heritage Home Decor',
+    category: 'Home Decor',
+    isPremium: true,
+    likes: ['user-101', 'user-102', 'user-103', 'user-104'],
+    comments: [
+      { id: 'c1', userName: 'Anil Rao', userPhone: '9848011223', text: 'Do you deliver custom dimensions?', createdAt: '2026-04-10T10:00:00Z' },
+    ],
+    views: 1240,
+    createdAt: '2026-04-10T09:00:00Z',
+  },
+  {
+    id: 'VID-PREM-102',
+    title: 'Authentic Hyderabadi Dum Biryani & Kebabs',
+    caption: 'Freshly prepared daily with farm-fresh spices and saffron basmati. Special catering orders available for weddings and private parties. Send enquiry!',
+    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-chef-garnishing-a-plate-in-a-restaurant-kitchen-42775-large.mp4',
+    merchantId: 'BIZ-FOOD-02',
+    merchantName: 'Spice Villa Family Restaurant',
+    category: 'Food & Dining',
+    isPremium: true,
+    likes: ['user-201', 'user-202'],
+    comments: [],
+    views: 980,
+    createdAt: '2026-04-12T12:00:00Z',
+  },
+  {
+    id: 'VID-PREM-103',
+    title: 'Deep Villa Cleaning & Eco-Friendly Sanitization',
+    caption: 'Full 5-stage deep cleaning: kitchen chimney degreasing, bathroom descaling, sofa shampooing. 100% verified staff. Request a free quote!',
+    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-cleaning-a-kitchen-counter-with-a-cloth-42784-large.mp4',
+    merchantId: 'BIZ-CLEAN-03',
+    merchantName: 'GreenClean Professional Services',
+    category: 'Home Cleaning',
+    isPremium: false,
+    likes: ['user-301'],
+    comments: [],
+    views: 650,
+    createdAt: '2026-04-14T15:00:00Z',
+  },
+  {
+    id: 'VID-PREM-104',
+    title: 'Bridal Makeover, Hair Botox & Organic Spa Treatment',
+    caption: 'Get ready for your special occasion with our master certified stylists. Special seasonal bridal packages. Send an enquiry to book your slot!',
+    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-hairstylist-brushing-and-styling-hair-in-a-salon-42790-large.mp4',
+    merchantId: 'BIZ-BEAUTY-04',
+    merchantName: 'Glamour Lounge Salon & Spa',
+    category: 'Beauty & Salon',
+    isPremium: true,
+    likes: ['user-401', 'user-402', 'user-403'],
+    comments: [],
+    views: 1420,
+    createdAt: '2026-04-15T11:30:00Z',
+  },
+];
+
 // REAL VIDEO UPLOADS API
 export function getStoredVideos(): StoredVideo[] {
-  return getStorage<StoredVideo[]>(STORAGE_KEYS.VIDEOS, []);
+  const stored = getStorage<StoredVideo[]>(STORAGE_KEYS.VIDEOS, []);
+  if (stored.length === 0) {
+    setStorage(STORAGE_KEYS.VIDEOS, INITIAL_MERCHANT_REELS);
+    return INITIAL_MERCHANT_REELS;
+  }
+  return stored;
 }
 
-export function saveVideo(video: Omit<StoredVideo, 'id' | 'createdAt' | 'likes' | 'comments' | 'views'>): StoredVideo {
+export function saveVideo(video: Omit<StoredVideo, 'id' | 'createdAt' | 'likes' | 'comments' | 'views'> & { isPremium?: boolean }): StoredVideo {
   const current = getStoredVideos();
   const newVid: StoredVideo = {
     ...video,
     id: 'VID-' + Date.now().toString().slice(-6),
+    isPremium: video.isPremium ?? false,
     likes: [],
     comments: [],
     views: 1,
