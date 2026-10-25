@@ -1,0 +1,906 @@
+// NEEDORA PRODUCTION RELATIONAL DATABASE SCHEMA (POSTGRESQL)
+// Strictly follows Master Specification Section 22
+// Non-negotiable: 100% Free Enquiry Model. Zero UPI, zero carts, zero checkout.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -------------------------------------------------------------
+// 1. AUTHENTICATION AND USERS
+// -------------------------------------------------------------
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  phone         String?   @unique
+  passwordHash  String?
+  authProvider  String    @default("credentials") // "credentials" | "phone_otp" | "google"
+  status        String    @default("active")      // "active" | "suspended" | "pending"
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  profile       UserProfile?
+  roles         UserRole[]
+  sessions      UserSession[]
+  consents      UserConsent[]
+  businesses    Business[]
+  posts         Post[]
+  postLikes     PostLike[]
+  postSaves     PostSave[]
+  comments      Comment[]
+  following     Follow[]  @relation("FollowerRelation")
+  followers     Follow[]  @relation("FollowingRelation")
+  enquiries     Enquiry[]
+  reviews       Review[]
+  notifications Notification[]
+  activityEvents ActivityEvent[]
+  searchHistory SearchHistory[]
+  aiConversations AiConversation[]
+  auditLogs     AuditLog[]
+  mediaAssets   MediaAsset[]
+  staffProfiles BusinessStaff[]
+
+  @@index([email])
+  @@index([phone])
+  @@map("users")
+}
+
+model UserProfile {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username          String   @unique
+  profileImage      String?
+  bio               String?
+  preferredLanguage String   @default("English")
+  city              String?
+  locationPrefs     Json?
+  privacySettings   Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("user_profiles")
+}
+
+model Role {
+  id          String     @id @default(uuid())
+  name        String     @unique // "customer" | "merchant" | "staff" | "moderator" | "administrator"
+  description String?
+  userRoles   UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  userId    String
+  roleId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model UserSession {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique
+  ipAddress String?
+  userAgent String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@map("user_sessions")
+}
+
+model UserConsent {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  consentType  String
+  purpose      String
+  version      String
+  agreedAt     DateTime  @default(now())
+  withdrawnAt  DateTime?
+
+  @@index([userId])
+  @@map("user_consents")
+}
+
+// -------------------------------------------------------------
+// 2. BUSINESSES AND MERCHANTS
+// -------------------------------------------------------------
+
+model Business {
+  id            String    @id @default(uuid())
+  ownerId       String
+  owner         User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  name          String
+  slug          String    @unique
+  description   String?
+  categoryId    String?
+  category      Category? @relation("PrimaryCategory", fields: [categoryId], references: [id])
+  logo          String?
+  coverImage    String?
+  gstin         String?
+  verified      Boolean   @default(false)
+  status        String    @default("active") // "active" | "pending" | "suspended"
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  branches      BusinessBranch[]
+  staff         BusinessStaff[]
+  claims        BusinessClaim[]
+  documents     BusinessVerificationDocument[]
+  serviceAreas  BusinessServiceArea[]
+  categories    BusinessCategory[]
+  products      Product[]
+  services      Service[]
+  offers        Offer[]
+  posts         Post[]
+  enquiries     Enquiry[]
+  reviews       Review[]
+  profileEvents BusinessProfileEvent[]
+
+  @@index([ownerId])
+  @@index([slug])
+  @@index([categoryId])
+  @@map("businesses")
+}
+
+model BusinessBranch {
+  id          String   @id @default(uuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name        String   @default("Main Branch")
+  address     String
+  locality    String?
+  city        String
+  state       String?
+  pincode     String
+  latitude    Float?
+  longitude   Float?
+  phone       String
+  email       String?
+  isPrimary   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  hours       BusinessHour[]
+  enquiries   Enquiry[]
+
+  @@index([businessId])
+  @@index([city])
+  @@index([pincode])
+  @@map("business_branches")
+}
+
+model BusinessStaff {
+  id          String   @id @default(uuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  staffRole   String   @default("agent") // "manager" | "agent" | "attendant"
+  permissions Json?
+  status      String   @default("active")
+  createdAt   DateTime @default(now())
+
+  @@unique([businessId, userId])
+  @@map("business_staff")
+}
+
+model BusinessClaim {
+  id          String   @id @default(uuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  claimantId  String
+  claimStatus String   @default("pending") // "pending" | "approved" | "rejected"
+  reviewNotes String?
+  createdAt   DateTime @default(now())
+
+  @@index([businessId])
+  @@map("business_claims")
+}
+
+model BusinessVerificationDocument {
+  id           String   @id @default(uuid())
+  businessId   String
+  business     Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  documentType String
+  storageKey   String
+  fileUrl      String
+  reviewStatus String   @default("pending") // "pending" | "verified" | "rejected"
+  reviewNotes  String?
+  createdAt    DateTime @default(now())
+
+  @@index([businessId])
+  @@map("business_verification_documents")
+}
+
+model BusinessHour {
+  id        String         @id @default(uuid())
+  branchId  String
+  branch    BusinessBranch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  dayOfWeek Int            // 0=Sunday, 1=Monday, etc.
+  openTime  String?        // e.g. "09:00"
+  closeTime String?        // e.g. "21:00"
+  isClosed  Boolean        @default(false)
+
+  @@unique([branchId, dayOfWeek])
+  @@map("business_hours")
+}
+
+model BusinessServiceArea {
+  id          String   @id @default(uuid())
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  pincode     String?
+  locality    String?
+  city        String
+  createdAt   DateTime @default(now())
+
+  @@index([businessId])
+  @@index([city])
+  @@map("business_service_areas")
+}
+
+model Category {
+  id          String     @id @default(uuid())
+  parentId    String?
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  name        String
+  slug        String     @unique
+  description String?
+  icon        String?
+  status      String     @default("active")
+  createdAt   DateTime   @default(now())
+
+  businesses  Business[] @relation("PrimaryCategory")
+  businessCategories BusinessCategory[]
+  enquiries   Enquiry[]
+
+  @@index([slug])
+  @@index([parentId])
+  @@map("categories")
+}
+
+model BusinessCategory {
+  businessId String
+  categoryId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([businessId, categoryId])
+  @@map("business_categories")
+}
+
+// -------------------------------------------------------------
+// 3. PRODUCTS AND SERVICES
+// -------------------------------------------------------------
+
+model Product {
+  id                 String         @id @default(uuid())
+  businessId         String
+  business           Business       @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name               String
+  description        String?
+  indicativePrice    Float?         // Nullable: "Contact for price" displayed when null
+  currency           String         @default("INR")
+  availabilityStatus String         @default("available")
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  images             ProductImage[]
+
+  @@index([businessId])
+  @@map("products")
+}
+
+model Service {
+  id              String        @id @default(uuid())
+  businessId      String
+  business        Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name            String
+  description     String?
+  indicativePrice Float?        // Nullable: "Contact for price" displayed when null
+  priceRange      String?
+  serviceStatus   String        @default("active")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  serviceAreas    ServiceArea[]
+
+  @@index([businessId])
+  @@map("services")
+}
+
+model ProductImage {
+  id           String     @id @default(uuid())
+  productId    String
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  mediaId      String
+  media        MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  displayOrder Int        @default(0)
+
+  @@index([productId])
+  @@map("product_images")
+}
+
+model ServiceArea {
+  id        String   @id @default(uuid())
+  serviceId String
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  city      String
+  locality  String?
+
+  @@index([serviceId])
+  @@map("service_areas")
+}
+
+model Offer {
+  id                String   @id @default(uuid())
+  businessId        String
+  business          Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  title             String
+  description       String?
+  discountTag       String?
+  terms             String?
+  startDate         DateTime
+  endDate           DateTime
+  publicationStatus String   @default("active")
+  createdAt         DateTime @default(now())
+
+  @@index([businessId])
+  @@map("offers")
+}
+
+// -------------------------------------------------------------
+// 4. POSTS, IMAGES, VIDEOS AND SOCIAL MEDIA
+// -------------------------------------------------------------
+
+model Post {
+  id                String        @id @default(uuid())
+  authorId          String
+  author            User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  businessId        String?
+  business          Business?     @relation(fields: [businessId], references: [id], onDelete: SetNull)
+  caption           String?
+  contentType       String        @default("post") // "post" | "announcement" | "reel"
+  visibility        String        @default("public")
+  publicationStatus String        @default("published")
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  media             PostMedia[]
+  likes             PostLike[]
+  comments          Comment[]
+  saves             PostSave[]
+  hashtags          PostHashtag[]
+  reports           PostReport[]
+  engagementEvents  PostEngagementEvent[]
+
+  @@index([authorId])
+  @@index([businessId])
+  @@map("posts")
+}
+
+model MediaAsset {
+  id               String          @id @default(uuid())
+  uploaderId       String
+  uploader         User            @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+  storageKey       String
+  url              String
+  mediaType        String          // "image" | "video" | "document"
+  mimeType         String
+  fileSize         Int
+  dimensions       String?
+  duration         Float?
+  processingStatus String          @default("ready") // "pending" | "processing" | "ready" | "failed"
+  createdAt        DateTime        @default(now())
+
+  postMedia        PostMedia[]
+  videoMetadata    VideoMetadata?
+  productImages    ProductImage[]
+  enquiryAttachments EnquiryAttachment[]
+
+  @@index([uploaderId])
+  @@map("media_assets")
+}
+
+model PostMedia {
+  id           String     @id @default(uuid())
+  postId       String
+  post         Post       @relation(fields: [postId], references: [id], onDelete: Cascade)
+  mediaId      String
+  media        MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  displayOrder Int        @default(0)
+
+  @@index([postId])
+  @@map("post_media")
+}
+
+model VideoMetadata {
+  id              String     @id @default(uuid())
+  mediaId         String     @unique
+  media           MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  thumbnailUrl    String?
+  duration        Float?
+  playbackUrl     String
+  viewsCount      Int        @default(0)
+
+  views           VideoViewEvent[]
+
+  @@map("video_metadata")
+}
+
+model Hashtag {
+  id            String        @id @default(uuid())
+  normalizedTag String        @unique
+  posts         PostHashtag[]
+
+  @@map("hashtags")
+}
+
+model PostHashtag {
+  postId    String
+  hashtagId String
+  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  hashtag   Hashtag @relation(fields: [hashtagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, hashtagId])
+  @@map("post_hashtags")
+}
+
+model PostLike {
+  postId    String
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([postId, userId]) // Strict 1 like per user per post
+  @@map("post_likes")
+}
+
+model Comment {
+  id               String    @id @default(uuid())
+  postId           String
+  post             Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId         String
+  author           User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parentId         String?
+  parent           Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies          Comment[] @relation("CommentReplies")
+  content          String
+  moderationStatus String    @default("approved")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([postId])
+  @@index([authorId])
+  @@map("comments")
+}
+
+model PostSave {
+  postId    String
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([postId, userId]) // Strict 1 save record per user per post
+  @@map("post_saves")
+}
+
+model Follow {
+  followerId  String
+  followingId String
+  follower    User     @relation("FollowerRelation", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("FollowingRelation", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@id([followerId, followingId]) // Strict 1 follow relationship per user pair
+  @@map("follows")
+}
+
+model PostReport {
+  id         String   @id @default(uuid())
+  postId     String
+  post       Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  reporterId String
+  reason     String
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+
+  @@index([postId])
+  @@map("post_reports")
+}
+
+// -------------------------------------------------------------
+// 5. ENQUIRIES AND CONVERSATIONS (100% FREE LEAD MODEL)
+// -------------------------------------------------------------
+
+model Enquiry {
+  id             String    @id @default(uuid())
+  enquiryRef     String    @unique // e.g. "ENQ-591024"
+  customerId     String
+  customer       User      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  businessId     String
+  business       Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  branchId       String?
+  branch         BusinessBranch? @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  categoryId     String?
+  category       Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  requirement    String
+  preferredTime  String?
+  status         String    @default("Submitted") // "Submitted" | "Sent to Business" | "Delivered" | "Viewed" | "Business Responded" | "Quote Provided" | "Customer Contacted" | "Closed"
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  recipients     EnquiryRecipient[]
+  messages       EnquiryMessage[]
+  attachments    EnquiryAttachment[]
+  statusHistory  EnquiryStatusHistory[]
+  quotes         EnquiryQuote[]
+  assignments    EnquiryAssignment[]
+  analytics      EnquiryAnalytics?
+
+  @@index([customerId])
+  @@index([businessId])
+  @@index([enquiryRef])
+  @@map("enquiries")
+}
+
+model EnquiryRecipient {
+  id             String    @id @default(uuid())
+  enquiryId      String
+  enquiry        Enquiry   @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  businessId     String
+  branchId       String?
+  deliveryStatus String    @default("dispatched")
+  dispatchedAt   DateTime  @default(now())
+
+  @@index([enquiryId])
+  @@index([businessId])
+  @@map("enquiry_recipients")
+}
+
+model EnquiryMessage {
+  id        String   @id @default(uuid())
+  enquiryId String
+  enquiry   Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  senderId  String
+  message   String
+  createdAt DateTime @default(now())
+
+  @@index([enquiryId])
+  @@map("enquiry_messages")
+}
+
+model EnquiryAttachment {
+  id         String     @id @default(uuid())
+  enquiryId  String
+  enquiry    Enquiry    @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  mediaId    String
+  media      MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  uploaderId String
+
+  @@index([enquiryId])
+  @@map("enquiry_attachments")
+}
+
+model EnquiryStatusHistory {
+  id             String   @id @default(uuid())
+  enquiryId      String
+  enquiry        Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  previousStatus String?
+  newStatus      String
+  changedById    String?
+  notes          String?
+  createdAt      DateTime @default(now())
+
+  @@index([enquiryId])
+  @@map("enquiry_status_history")
+}
+
+model EnquiryQuote {
+  id               String   @id @default(uuid())
+  enquiryId        String
+  enquiry          Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  merchantId       String
+  description      String
+  indicativeAmount Float?   // Informational only: strictly no payment/checkout processing
+  currency         String   @default("INR")
+  validityDays     Int      @default(7)
+  status           String   @default("active")
+  createdAt        DateTime @default(now())
+
+  @@index([enquiryId])
+  @@map("enquiry_quotes")
+}
+
+model EnquiryAssignment {
+  id              String   @id @default(uuid())
+  enquiryId       String
+  enquiry         Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  assignedStaffId String
+  assignedAt      DateTime @default(now())
+
+  @@index([enquiryId])
+  @@map("enquiry_assignments")
+}
+
+// -------------------------------------------------------------
+// 6. RATINGS AND REVIEWS
+// -------------------------------------------------------------
+
+model Review {
+  id               String        @id @default(uuid())
+  customerId       String
+  customer         User          @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  businessId       String
+  business         Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  rating           Int           // 1 to 5
+  reviewText       String
+  moderationStatus String        @default("approved")
+  createdAt        DateTime      @default(now())
+
+  reply            ReviewReply?
+  reports          ReviewReport[]
+
+  @@index([businessId])
+  @@index([customerId])
+  @@map("reviews")
+}
+
+model ReviewReply {
+  id         String   @id @default(uuid())
+  reviewId   String   @unique
+  review     Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  merchantId String
+  replyText  String
+  createdAt  DateTime @default(now())
+
+  @@map("review_replies")
+}
+
+model ReviewReport {
+  id         String   @id @default(uuid())
+  reviewId   String
+  review     Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reporterId String
+  reason     String
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+
+  @@index([reviewId])
+  @@map("review_reports")
+}
+
+// -------------------------------------------------------------
+// 7. NOTIFICATIONS AND ACTIVITY
+// -------------------------------------------------------------
+
+model Notification {
+  id                String    @id @default(uuid())
+  recipientId       String
+  recipient         User      @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  notificationType  String
+  title             String
+  message           String
+  relatedEntityType String?
+  relatedEntityId   String?
+  isRead            Boolean   @default(false)
+  readAt            DateTime?
+  createdAt         DateTime  @default(now())
+
+  deliveryLogs      NotificationDeliveryLog[]
+
+  @@index([recipientId])
+  @@map("notifications")
+}
+
+model NotificationDeliveryLog {
+  id             String       @id @default(uuid())
+  notificationId String
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  channel        String       // "in_app" | "sms" | "whatsapp" | "email"
+  status         String
+  attemptCount   Int          @default(1)
+  timestamp      DateTime     @default(now())
+
+  @@index([notificationId])
+  @@map("notification_delivery_logs")
+}
+
+model ActivityEvent {
+  id         String   @id @default(uuid())
+  actorId    String?
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  eventType  String
+  entityType String
+  entityId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([eventType])
+  @@map("activity_events")
+}
+
+// -------------------------------------------------------------
+// 8. SEARCH AND ANALYTICS
+// -------------------------------------------------------------
+
+model SearchHistory {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  query     String
+  location  String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([query])
+  @@map("search_history")
+}
+
+model BusinessProfileEvent {
+  id         String   @id @default(uuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  eventType  String   // "profile_view" | "phone_click" | "whatsapp_click" | "directions_click"
+  actorId    String?
+  createdAt  DateTime @default(now())
+
+  @@index([businessId])
+  @@map("business_profile_events")
+}
+
+model PostEngagementEvent {
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  eventType String   // "view" | "share" | "like"
+  actorId   String?
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+  @@map("post_engagement_events")
+}
+
+model VideoViewEvent {
+  id              String        @id @default(uuid())
+  videoId         String
+  video           VideoMetadata @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  viewerId        String?
+  durationWatched Float?
+  createdAt       DateTime      @default(now())
+
+  @@index([videoId])
+  @@map("video_view_events")
+}
+
+model EnquiryAnalytics {
+  id                  String   @id @default(uuid())
+  enquiryId           String   @unique
+  enquiry             Enquiry  @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  businessId          String
+  responseTimeMinutes Int?
+  leadOutcome         String?  // "converted_offline" | "in_discussion" | "cancelled"
+  createdAt           DateTime @default(now())
+
+  @@map("enquiry_analytics")
+}
+
+// -------------------------------------------------------------
+// 9. DORA AI
+// -------------------------------------------------------------
+
+model AiConversation {
+  id        String      @id @default(uuid())
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  status    String      @default("active")
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  messages  AiMessage[]
+  toolEvents AiToolEvent[]
+
+  @@index([userId])
+  @@map("ai_conversations")
+}
+
+model AiMessage {
+  id             String         @id @default(uuid())
+  conversationId String
+  conversation   AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String         // "user" | "assistant" | "system"
+  content        String
+  createdAt      DateTime       @default(now())
+
+  @@index([conversationId])
+  @@map("ai_messages")
+}
+
+model AiToolEvent {
+  id              String         @id @default(uuid())
+  conversationId  String
+  conversation    AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  toolName        String
+  parameters      Json?
+  executionStatus String         @default("success")
+  createdAt       DateTime       @default(now())
+
+  @@index([conversationId])
+  @@map("ai_tool_events")
+}
+
+// -------------------------------------------------------------
+// 10. ADMINISTRATION AND MODERATION
+// -------------------------------------------------------------
+
+model Report {
+  id         String   @id @default(uuid())
+  reporterId String
+  targetType String   // "business" | "post" | "user" | "review"
+  targetId   String
+  reason     String
+  status     String   @default("pending") // "pending" | "reviewed" | "dismissed" | "actioned"
+  createdAt  DateTime @default(now())
+
+  @@index([targetType, targetId])
+  @@map("reports")
+}
+
+model ModerationAction {
+  id          String   @id @default(uuid())
+  moderatorId String
+  targetType  String
+  targetId    String
+  action      String   // "suspend" | "remove" | "warn" | "reinstate"
+  reason      String
+  createdAt   DateTime @default(now())
+
+  @@map("moderation_actions")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String?
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@map("audit_logs")
+}
+
+model AdminSetting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       Json
+  description String?
+  updatedAt   DateTime @updatedAt
+
+  @@map("admin_settings")
+}

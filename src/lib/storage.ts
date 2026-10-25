@@ -167,6 +167,26 @@ export function saveBusiness(biz: Omit<StoredBusiness, 'id' | 'createdAt' | 'fol
     createdAt: new Date().toISOString(),
   };
   setStorage(STORAGE_KEYS.BUSINESSES, [newBusiness, ...current]);
+
+  // Asynchronously dispatch to Backend PostgreSQL API
+  if (typeof window !== 'undefined') {
+    fetch('/api/businesses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: biz.name,
+        description: biz.description,
+        categoryName: biz.category,
+        address: biz.address,
+        city: biz.city,
+        pincode: biz.pincode,
+        phone: biz.phone,
+        ownerName: biz.ownerName,
+        gstin: biz.gstin,
+      }),
+    }).catch(err => console.warn('Background business sync:', err));
+  }
+
   return newBusiness;
 }
 
@@ -200,6 +220,24 @@ export function saveEnquiry(enquiry: Omit<StoredEnquiry, 'id' | 'enquiryRef' | '
     link: '/merchant',
   });
 
+  // Asynchronously dispatch to Backend PostgreSQL API
+  if (typeof window !== 'undefined') {
+    fetch('/api/enquiries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        businessId: enquiry.businessId,
+        businessName: enquiry.businessName,
+        customerName: enquiry.customerName,
+        customerPhone: enquiry.customerPhone,
+        location: enquiry.location,
+        requirement: enquiry.requirement,
+        preferredTime: enquiry.preferredTime,
+        category: enquiry.category,
+      }),
+    }).catch(err => console.warn('Background enquiry sync:', err));
+  }
+
   return newEnquiry;
 }
 
@@ -217,6 +255,19 @@ export function updateEnquiryStatus(id: string, status: StoredEnquiry['status'],
     return e;
   });
   setStorage(STORAGE_KEYS.ENQUIRIES, updated);
+
+  // Asynchronously dispatch to Backend PostgreSQL API
+  if (typeof window !== 'undefined') {
+    fetch(`/api/enquiries/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        status,
+        responseNotes,
+        quoteDetails,
+      }),
+    }).catch(err => console.warn('Background status sync:', err));
+  }
 }
 
 // REAL VIDEO UPLOADS API
@@ -235,6 +286,22 @@ export function saveVideo(video: Omit<StoredVideo, 'id' | 'createdAt' | 'likes' 
     createdAt: new Date().toISOString(),
   };
   setStorage(STORAGE_KEYS.VIDEOS, [newVid, ...current]);
+
+  // Asynchronously dispatch to Backend PostgreSQL API
+  if (typeof window !== 'undefined') {
+    fetch('/api/videos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: video.title,
+        caption: video.caption,
+        videoUrl: video.videoUrl,
+        merchantName: video.merchantName,
+        category: video.category,
+      }),
+    }).catch(err => console.warn('Background video sync:', err));
+  }
+
   return newVid;
 }
 
@@ -294,6 +361,20 @@ export function savePost(post: Omit<StoredPost, 'id' | 'createdAt' | 'likes' | '
     createdAt: new Date().toISOString(),
   };
   setStorage(STORAGE_KEYS.POSTS, [newPost, ...current]);
+
+  if (typeof window !== 'undefined') {
+    fetch('/api/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        businessName: post.businessName,
+        authorName: post.authorName,
+        content: post.content,
+        imageUrl: post.imageUrl,
+      }),
+    }).catch(err => console.warn('Background post sync:', err));
+  }
+
   return newPost;
 }
 
@@ -312,6 +393,15 @@ export function togglePostLike(postId: string, userId: string): boolean {
     return p;
   });
   setStorage(STORAGE_KEYS.POSTS, updated);
+
+  if (typeof window !== 'undefined') {
+    fetch(`/api/posts/${postId}/like`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId }),
+    }).catch(err => console.warn('Background like sync:', err));
+  }
+
   return isLiked;
 }
 
@@ -335,6 +425,14 @@ export function addPostComment(postId: string, userName: string, text: string): 
     return p;
   });
   setStorage(STORAGE_KEYS.POSTS, updated);
+
+  if (typeof window !== 'undefined') {
+    fetch(`/api/posts/${postId}/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ authorName: userName, text }),
+    }).catch(err => console.warn('Background comment sync:', err));
+  }
 }
 
 // FOLLOW SYSTEM API
