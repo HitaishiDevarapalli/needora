@@ -22,6 +22,8 @@ export interface BookingModalProps {
   serviceName?: string;
   category?: string;
   providerName?: string;
+  businessName?: string;
+  businessId?: string;
   isOpen?: boolean;
   onClose: () => void;
   onOrderPlaced?: (enquiryData: any) => void;
@@ -32,15 +34,17 @@ export default function BookingModal({
   serviceName, 
   category, 
   providerName,
+  businessName,
+  businessId,
   isOpen = true, 
   onClose, 
   onOrderPlaced 
 }: BookingModalProps) {
-  if (!isOpen && !service && !serviceName) return null;
-  if (!service && !serviceName) return null;
+  if (!isOpen && !service && !serviceName && !businessName) return null;
+  if (!service && !serviceName && !businessName) return null;
 
-  const title = service?.title || serviceName || 'Local Service';
-  const provider = service?.providerName || providerName || 'Verified Merchant';
+  const title = service?.title || serviceName || 'General Enquiry';
+  const provider = businessName || service?.providerName || providerName || 'Verified Merchant';
   const cat = service?.category || category || 'General';
 
   const [fullName, setFullName] = useState('Priya Sharma');
@@ -67,7 +71,7 @@ export default function BookingModal({
     
     // Save to real persistent storage engine
     const saved = saveEnquiry({
-      businessId: 'BIZ-' + Math.floor(100 + Math.random() * 900),
+      businessId: businessId || ('BIZ-' + Math.floor(100 + Math.random() * 900)),
       businessName: provider,
       category: cat,
       customerName: fullName,

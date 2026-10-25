@@ -218,9 +218,11 @@ export default function ExplorePage() {
                           <div className="flex items-start justify-between gap-3 mb-3">
                             <div>
                               <div className="flex items-center gap-1.5">
-                                <h3 className="font-bold text-slate-900 text-base hover:text-blue-600 transition-colors">
-                                  {biz.name}
-                                </h3>
+                                <Link href={`/businesses/${biz.id}`}>
+                                  <h3 className="font-bold text-slate-900 text-base hover:text-blue-600 transition-colors hover:underline">
+                                    {biz.name}
+                                  </h3>
+                                </Link>
                                 {biz.verified && (
                                   <span title="Verified Business">
                                     <CheckCircle className="w-4 h-4 text-emerald-600" />

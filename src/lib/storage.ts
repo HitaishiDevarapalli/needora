@@ -106,14 +106,50 @@ export interface StoredNotification {
   createdAt: string;
 }
 
+export interface StoredAdvertisement {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  destinationUrl: string;
+  businessId: string;
+  businessName: string;
+  category: string;
+  targetCity: string;
+  startDate: string;
+  endDate: string;
+  budgetTier: 'Starter' | 'Growth' | 'Enterprise';
+  status: 'Draft' | 'Pending Approval' | 'Active' | 'Paused' | 'Rejected' | 'Completed';
+  impressions: number;
+  clicks: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StoredSubscription {
+  id: string;
+  businessId: string;
+  businessName: string;
+  planName: 'Free' | 'Silver' | 'Gold' | 'Platinum Enterprise';
+  isPremium: boolean;
+  pricePerMonth: string;
+  validUntil: string;
+  status: 'active' | 'expired' | 'cancelled';
+  createdAt: string;
+}
+
 // STORAGE KEYS
 const STORAGE_KEYS = {
   USER: 'needora_user_session',
+  USERS_LIST: 'needora_users_list',
   BUSINESSES: 'needora_businesses',
   ENQUIRIES: 'needora_enquiries',
   VIDEOS: 'needora_videos',
   POSTS: 'needora_posts',
   NOTIFICATIONS: 'needora_notifications',
+  ADVERTISEMENTS: 'needora_advertisements',
+  SUBSCRIPTIONS: 'needora_subscriptions',
+  CATEGORIES_CUSTOM: 'needora_categories_custom',
 };
 
 // Safe localStorage access
@@ -579,4 +615,270 @@ export function markAllNotificationsRead(): void {
   const current = getStoredNotifications();
   const updated = current.map(n => ({ ...n, read: true }));
   setStorage(STORAGE_KEYS.NOTIFICATIONS, updated);
+}
+
+// ADVERTISEMENTS ENGINE (Section 3 of requirements)
+const INITIAL_ADVERTISEMENTS: StoredAdvertisement[] = [
+  {
+    id: 'AD-2026-01',
+    title: 'Grand Festive Home Decor Sale - Up to 40% Off Handcrafted Sofas',
+    description: 'Exclusive artisanal living room sets, solid teak coffee tables, and contemporary lighting. Visit our Mumbai showroom or send a direct quote request.',
+    imageUrl: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80',
+    destinationUrl: '/businesses/BIZ-DECOR-01',
+    businessId: 'BIZ-DECOR-01',
+    businessName: 'Royal Heritage Home Decor',
+    category: 'Home Decor',
+    targetCity: 'Mumbai',
+    startDate: '2026-04-01',
+    endDate: '2026-05-30',
+    budgetTier: 'Enterprise',
+    status: 'Active',
+    impressions: 4820,
+    clicks: 342,
+    createdAt: '2026-04-01T10:00:00Z',
+    updatedAt: '2026-04-01T10:00:00Z',
+  },
+  {
+    id: 'AD-2026-02',
+    title: 'Weekend Family Dining Special & Royal Biryani Buffets',
+    description: 'Authentic Hyderabadi dum biryani & sizzlers with farm-fresh spices. Book your table or event catering with 0 middlemen fees.',
+    imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80',
+    destinationUrl: '/businesses/BIZ-FOOD-02',
+    businessId: 'BIZ-FOOD-02',
+    businessName: 'Spice Villa Family Restaurant',
+    category: 'Food & Dining',
+    targetCity: 'Mumbai',
+    startDate: '2026-04-10',
+    endDate: '2026-05-15',
+    budgetTier: 'Growth',
+    status: 'Active',
+    impressions: 2950,
+    clicks: 218,
+    createdAt: '2026-04-10T11:00:00Z',
+    updatedAt: '2026-04-10T11:00:00Z',
+  },
+  {
+    id: 'AD-2026-03',
+    title: 'Monsoon Deep Home Cleaning & Waterproofing Service',
+    description: 'Certified 5-stage sanitization, sofa shampooing, and bathroom restoration. Book a free consultation visit.',
+    imageUrl: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80',
+    destinationUrl: '/services/home-cleaning',
+    businessId: 'BIZ-CLEAN-03',
+    businessName: 'GreenClean Professional Services',
+    category: 'Home Cleaning',
+    targetCity: 'Mumbai',
+    startDate: '2026-04-20',
+    endDate: '2026-06-20',
+    budgetTier: 'Starter',
+    status: 'Pending Approval',
+    impressions: 0,
+    clicks: 0,
+    createdAt: '2026-04-20T14:30:00Z',
+    updatedAt: '2026-04-20T14:30:00Z',
+  },
+];
+
+export function getStoredAdvertisements(): StoredAdvertisement[] {
+  const stored = getStorage<StoredAdvertisement[]>(STORAGE_KEYS.ADVERTISEMENTS, []);
+  if (stored.length === 0) {
+    setStorage(STORAGE_KEYS.ADVERTISEMENTS, INITIAL_ADVERTISEMENTS);
+    return INITIAL_ADVERTISEMENTS;
+  }
+  return stored;
+}
+
+export function saveAdvertisement(ad: Omit<StoredAdvertisement, 'id' | 'impressions' | 'clicks' | 'createdAt' | 'updatedAt'>): StoredAdvertisement {
+  const current = getStoredAdvertisements();
+  const newAd: StoredAdvertisement = {
+    ...ad,
+    id: 'AD-' + Date.now().toString().slice(-6),
+    impressions: 0,
+    clicks: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  setStorage(STORAGE_KEYS.ADVERTISEMENTS, [newAd, ...current]);
+  return newAd;
+}
+
+export function updateAdvertisement(id: string, updates: Partial<StoredAdvertisement>): StoredAdvertisement | null {
+  const current = getStoredAdvertisements();
+  let updatedAd: StoredAdvertisement | null = null;
+  const list = current.map(ad => {
+    if (ad.id === id) {
+      updatedAd = { ...ad, ...updates, updatedAt: new Date().toISOString() };
+      return updatedAd;
+    }
+    return ad;
+  });
+  setStorage(STORAGE_KEYS.ADVERTISEMENTS, list);
+  return updatedAd;
+}
+
+export function deleteAdvertisement(id: string): void {
+  const current = getStoredAdvertisements();
+  setStorage(STORAGE_KEYS.ADVERTISEMENTS, current.filter(ad => ad.id !== id));
+}
+
+// SUBSCRIPTION & PREMIUM PLAN ENGINE (Section 4E of requirements)
+const INITIAL_SUBSCRIPTIONS: StoredSubscription[] = [
+  {
+    id: 'SUB-101',
+    businessId: 'BIZ-DECOR-01',
+    businessName: 'Royal Heritage Home Decor',
+    planName: 'Platinum Enterprise',
+    isPremium: true,
+    pricePerMonth: '₹2,499/mo (Platform Promoted)',
+    validUntil: '2027-04-10',
+    status: 'active',
+    createdAt: '2026-04-10T10:00:00Z',
+  },
+  {
+    id: 'SUB-102',
+    businessId: 'BIZ-FOOD-02',
+    businessName: 'Spice Villa Family Restaurant',
+    planName: 'Gold',
+    isPremium: true,
+    pricePerMonth: '₹1,499/mo (Verified Premium)',
+    validUntil: '2027-04-12',
+    status: 'active',
+    createdAt: '2026-04-12T12:00:00Z',
+  },
+  {
+    id: 'SUB-103',
+    businessId: 'BIZ-BEAUTY-04',
+    businessName: 'Glamour Lounge Salon & Spa',
+    planName: 'Gold',
+    isPremium: true,
+    pricePerMonth: '₹1,499/mo (Verified Premium)',
+    validUntil: '2026-10-15',
+    status: 'active',
+    createdAt: '2026-04-15T11:30:00Z',
+  },
+];
+
+export function getStoredSubscriptions(): StoredSubscription[] {
+  const stored = getStorage<StoredSubscription[]>(STORAGE_KEYS.SUBSCRIPTIONS, []);
+  if (stored.length === 0) {
+    setStorage(STORAGE_KEYS.SUBSCRIPTIONS, INITIAL_SUBSCRIPTIONS);
+    return INITIAL_SUBSCRIPTIONS;
+  }
+  return stored;
+}
+
+export function saveSubscription(sub: Omit<StoredSubscription, 'id' | 'createdAt'>): StoredSubscription {
+  const current = getStoredSubscriptions();
+  const newSub: StoredSubscription = {
+    ...sub,
+    id: 'SUB-' + Date.now().toString().slice(-6),
+    createdAt: new Date().toISOString(),
+  };
+  setStorage(STORAGE_KEYS.SUBSCRIPTIONS, [newSub, ...current]);
+
+  // Sync premium flag with Business and Reels
+  updateBusinessPremiumStatus(sub.businessId, sub.isPremium);
+  return newSub;
+}
+
+export function updateBusinessPremiumStatus(businessId: string, isPremium: boolean): void {
+  // Update in videos
+  const videos = getStoredVideos();
+  const updatedVideos = videos.map(v => {
+    if (v.merchantId === businessId) {
+      return { ...v, isPremium };
+    }
+    return v;
+  });
+  setStorage(STORAGE_KEYS.VIDEOS, updatedVideos);
+}
+
+// ADMIN BUSINESS MANAGEMENT (Section 4A of requirements)
+export function updateBusinessStatus(businessId: string, status: StoredBusiness['status']): void {
+  const current = getStoredBusinesses();
+  setStorage(STORAGE_KEYS.BUSINESSES, current.map(b => b.id === businessId ? { ...b, status } : b));
+}
+
+export function updateBusinessVerification(businessId: string, verified: boolean): void {
+  const current = getStoredBusinesses();
+  setStorage(STORAGE_KEYS.BUSINESSES, current.map(b => b.id === businessId ? { ...b, verified } : b));
+}
+
+export function deleteBusiness(businessId: string): void {
+  const current = getStoredBusinesses();
+  setStorage(STORAGE_KEYS.BUSINESSES, current.filter(b => b.id !== businessId));
+}
+
+// ADMIN REELS MANAGEMENT (Section 4C of requirements)
+export function deleteVideo(videoId: string): void {
+  const current = getStoredVideos();
+  setStorage(STORAGE_KEYS.VIDEOS, current.filter(v => v.id !== videoId));
+}
+
+// ADMIN USERS & ACCOUNTS MANAGEMENT (Section 4B of requirements)
+const INITIAL_USERS: UserProfile[] = [
+  {
+    id: 'USR-ADMIN-01',
+    name: 'Needora Super Admin',
+    email: 'admin@needora.com',
+    phone: '+91 99999 00001',
+    role: 'admin',
+    following: [],
+    savedBusinesses: [],
+    savedPosts: [],
+    createdAt: '2026-01-01T00:00:00Z',
+  },
+  {
+    id: 'USR-MERCHANT-01',
+    name: 'Suresh Singhania',
+    email: 'suresh@royaldecor.in',
+    phone: '+91 98201 12345',
+    role: 'merchant',
+    businessId: 'BIZ-DECOR-01',
+    following: [],
+    savedBusinesses: [],
+    savedPosts: [],
+    createdAt: '2026-02-15T10:00:00Z',
+  },
+  {
+    id: 'USR-MERCHANT-02',
+    name: 'Chef Farhan Qureshi',
+    email: 'farhan@spicevilla.com',
+    phone: '+91 98480 23456',
+    role: 'merchant',
+    businessId: 'BIZ-FOOD-02',
+    following: [],
+    savedBusinesses: [],
+    savedPosts: [],
+    createdAt: '2026-03-01T12:00:00Z',
+  },
+  {
+    id: 'USR-CUST-01',
+    name: 'Priya Sharma',
+    email: 'priya.sharma@gmail.com',
+    phone: '+91 98765 43210',
+    role: 'customer',
+    following: ['BIZ-DECOR-01'],
+    savedBusinesses: ['BIZ-DECOR-01'],
+    savedPosts: [],
+    createdAt: '2026-03-10T14:00:00Z',
+  },
+];
+
+export function getStoredUsers(): UserProfile[] {
+  const stored = getStorage<UserProfile[]>(STORAGE_KEYS.USERS_LIST, []);
+  if (stored.length === 0) {
+    setStorage(STORAGE_KEYS.USERS_LIST, INITIAL_USERS);
+    return INITIAL_USERS;
+  }
+  return stored;
+}
+
+export function updateUserRole(userId: string, role: UserProfile['role']): void {
+  const current = getStoredUsers();
+  setStorage(STORAGE_KEYS.USERS_LIST, current.map(u => u.id === userId ? { ...u, role } : u));
+}
+
+export function deleteUser(userId: string): void {
+  const current = getStoredUsers();
+  setStorage(STORAGE_KEYS.USERS_LIST, current.filter(u => u.id !== userId));
 }

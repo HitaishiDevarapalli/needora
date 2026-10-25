@@ -174,7 +174,9 @@ export default function SearchPage() {
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <h3 className="font-bold text-slate-900 text-base">{biz.name}</h3>
+                        <Link href={`/businesses/${biz.id}`} className="hover:text-blue-600 transition-colors">
+                          <h3 className="font-bold text-slate-900 text-base hover:underline">{biz.name}</h3>
+                        </Link>
                         {biz.verified && (
                           <span title="Verified by Needora Admin">
                             <CheckCircle className="w-4 h-4 text-emerald-600" />

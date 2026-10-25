@@ -94,35 +94,37 @@ export default function Header({
   return (
     <>
       {/* FLOATING SIDE TABS MATCHING JUSTDIAL IN IMAGES 1 & 3 */}
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40 flex flex-col items-end gap-1 pointer-events-auto">
+      <div className="hidden md:flex fixed right-0 top-1/2 -translate-y-1/2 z-40 flex-col items-end gap-1 pointer-events-auto">
         <Link
-          href="/listing"
+          href="/advertise"
           className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-[11px] px-2.5 py-4 rounded-l-xl shadow-lg transition-all [writing-mode:vertical-rl] tracking-wider"
+          title="Promote your store with Needora Ads"
         >
           Advertise
         </Link>
         <Link
           href="/listing"
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] px-2.5 py-4 rounded-l-xl shadow-lg transition-all [writing-mode:vertical-rl] tracking-wider flex items-center gap-1"
+          title="Free Merchant Listing"
         >
           <span>Free Listing</span>
         </Link>
       </div>
 
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm transition-all overflow-x-clip">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20 gap-2">
             
             {/* Logo & Brand */}
-            <Link href="/" className="flex items-center gap-3 group shrink-0">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 flex items-center justify-center shadow-md shadow-indigo-100 group-hover:scale-105 transition-transform">
-                <span className="text-white font-black text-2xl tracking-tighter">N</span>
+            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 flex items-center justify-center shadow-md shadow-indigo-100 group-hover:scale-105 transition-transform">
+                <span className="text-white font-black text-xl sm:text-2xl tracking-tighter">N</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-bold text-slate-900 tracking-tight leading-none group-hover:text-brand-700 transition-colors">
+                <span className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight leading-none group-hover:text-brand-700 transition-colors">
                   Needora
                 </span>
-                <span className="text-[10px] font-medium text-slate-500 tracking-wider mt-1">
+                <span className="text-[10px] font-medium text-slate-500 tracking-wider mt-1 hidden sm:inline">
                   Discover. Connect. Get It Done.
                 </span>
               </div>
@@ -132,16 +134,16 @@ export default function Header({
             <button
               type="button"
               onClick={() => setLocationModalOpen(true)}
-              className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-700 hover:bg-slate-100 hover:border-blue-400 transition-all cursor-pointer shrink-0"
+              className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-xs text-slate-700 hover:bg-slate-100 hover:border-blue-400 transition-all cursor-pointer shrink-0"
               title="Click to detect your precise location"
             >
               <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0 animate-bounce" />
-              <span className="font-semibold truncate max-w-[150px]">{selectedCity}</span>
+              <span className="font-semibold truncate max-w-[130px]">{selectedCity}</span>
               <ChevronDown className="w-3 h-3 text-slate-400" />
             </button>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-5 text-sm font-medium text-slate-700">
+            <nav className="hidden lg:flex items-center space-x-3 xl:space-x-5 text-xs xl:text-sm font-medium text-slate-700">
               <Link 
                 href="/" 
                 className="text-brand-600 font-semibold relative py-1 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-brand-600"
@@ -267,6 +269,10 @@ export default function Header({
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               </Link>
 
+              <Link href="/advertise" className="text-slate-700 hover:text-amber-600 transition-colors">
+                Advertise
+              </Link>
+
               <Link href="/contact" className="text-slate-700 hover:text-brand-600 transition-colors">
                 Contact
               </Link>
@@ -373,12 +379,30 @@ export default function Header({
                       </div>
 
                       <Link
+                        href="/profile"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
+                      >
+                        <User className="w-4 h-4 text-slate-500" />
+                        <span>My Profile & Account</span>
+                      </Link>
+
+                      <Link
                         href="/my-enquiries"
                         onClick={() => setUserDropdownOpen(false)}
                         className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
                       >
                         <MessageSquare className="w-4 h-4 text-blue-600" />
                         <span>My Enquiries</span>
+                      </Link>
+
+                      <Link
+                        href="/advertise"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition-colors"
+                      >
+                        <Megaphone className="w-4 h-4 text-amber-600" />
+                        <span>Advertise Business</span>
                       </Link>
 
                       {currentUser.role === 'merchant' && (
@@ -521,6 +545,21 @@ export default function Header({
                   <span>My Enquiries</span>
                 </div>
                 <span className="text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold">ACTIVE LEADS</span>
+              </Link>
+              <Link 
+                href="/advertise" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-lg hover:bg-slate-50 text-amber-600 font-bold flex items-center justify-between"
+              >
+                <span>Advertise with Needora</span>
+                <span className="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-bold">ADS</span>
+              </Link>
+              <Link 
+                href="/profile" 
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2 px-3 rounded-lg hover:bg-slate-50 font-medium"
+              >
+                My Profile & Preferences
               </Link>
               <Link 
                 href="/listing" 
